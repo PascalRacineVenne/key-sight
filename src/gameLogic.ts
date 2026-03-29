@@ -63,9 +63,7 @@ const LEVEL_NOTE_COUNT: Record<Level, number> = {
 
 export const TOTAL_QUESTIONS = 20
 
-function pickNotes(all: NoteDefinition[], count: number): NoteDefinition[] {
-  return all.slice(0, count)
-}
+const pickNotes = (all: NoteDefinition[], count: number): NoteDefinition[] => all.slice(0, count)
 
 function shuffle<T>(arr: T[]): T[] {
   const a = [...arr]
@@ -76,7 +74,7 @@ function shuffle<T>(arr: T[]): T[] {
   return a
 }
 
-export function generateQuestions(level: Level, clef: Clef): Question[] {
+export const generateQuestions = (level: Level, clef: Clef): Question[]  => {
   const pool = clef === 'treble' ? TREBLE_NOTES : BASS_NOTES
   const notes = pickNotes(pool, LEVEL_NOTE_COUNT[level])
   // Ensure each note appears at least once, then fill up to TOTAL_QUESTIONS
@@ -89,7 +87,7 @@ export function generateQuestions(level: Level, clef: Clef): Question[] {
     .map((note) => ({ note, clef }))
 }
 
-export function getKeyboardNotes(level: Level, clef: Clef): NoteDefinition[] {
+export const getKeyboardNotes = (level: Level, clef: Clef): NoteDefinition[] => {
   const pool = clef === 'treble' ? TREBLE_NOTES : BASS_NOTES
   return pickNotes(pool, LEVEL_NOTE_COUNT[level])
 }
