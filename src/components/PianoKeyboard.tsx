@@ -8,15 +8,24 @@ interface Props {
   correctKey: string | null
 }
 
-const BLACK_NOTES = ['C#', 'D#', 'F#', 'G#', 'A#', 'Bb', 'Eb']
+const CHROMATIC_ORDER: Record<string, number> = {
+  C: 0, 'C#': 1, Db: 1, D: 2, 'D#': 3, Eb: 3, E: 4,
+  F: 5, 'F#': 6, Gb: 6, G: 7, 'G#': 8, Ab: 8, A: 9,
+  'A#': 10, Bb: 10, B: 11,
+}
+
+function pitchIndex(note: NoteDefinition) {
+  return note.octave * 12 + (CHROMATIC_ORDER[note.name] ?? 0)
+}
 
 function isBlack(name: string) {
-  return BLACK_NOTES.some((b) => name.startsWith(b) || name === b)
+  return name.length > 1 && (name.includes('#') || name.includes('b'))
 }
 
 export default function PianoKeyboard({ notes, onSelect, disabled, selectedKey, correctKey }: Props) {
-  const whiteKeys = notes.filter((n) => !isBlack(n.name))
-  const blackKeys = notes.filter((n) => isBlack(n.name))
+  const sorted = [...notes].sort((a, b) => pitchIndex(a) - pitchIndex(b))
+  const whiteKeys = sorted.filter((n) => !isBlack(n.name))
+  const blackKeys = sorted.filter((n) => isBlack(n.name))
 
   const keyWidth = Math.min(52, Math.floor((window.innerWidth - 32) / Math.max(whiteKeys.length, 1)))
   const whiteHeight = keyWidth * 2.8
