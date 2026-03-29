@@ -67,7 +67,15 @@ const GameScreen = ({ level, clef, questions, onFinish }: Props) => {
       }}
     >
       {/* Header */}
-      <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
+      <div
+        style={{
+          display: "flex",
+          margin: "0 auto",
+          alignItems: "center",
+          gap: 12,
+          width: "50%",
+        }}
+      >
         <Text type="secondary" style={{ whiteSpace: "nowrap", fontSize: 13 }}>
           {index + 1} / {TOTAL_QUESTIONS}
         </Text>

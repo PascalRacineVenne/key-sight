@@ -128,10 +128,10 @@ const PianoKeyboard = ({
                 bottom: 24,
                 left: "50%",
                 transform: "translateX(-50%)",
-                width: 5,
-                height: 5,
+                width: 8,
+                height: 8,
                 borderRadius: "50%",
-                background: "#28ce5d",
+                background: "#1163c7",
                 pointerEvents: "none",
               }}
             />
