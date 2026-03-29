@@ -121,6 +121,21 @@ const PianoKeyboard = ({
           }}
         >
           {note.name}
+          {note.keyLabel === "C4" && (
+            <span
+              style={{
+                position: "absolute",
+                bottom: 24,
+                left: "50%",
+                transform: "translateX(-50%)",
+                width: 5,
+                height: 5,
+                borderRadius: "50%",
+                background: "#28ce5d",
+                pointerEvents: "none",
+              }}
+            />
+          )}
         </button>
       ))}
 
