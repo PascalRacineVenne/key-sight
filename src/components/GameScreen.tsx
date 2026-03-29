@@ -67,7 +67,15 @@ const GameScreen = ({ level, clef, questions, onFinish }: Props) => {
       }}
     >
       {/* Header */}
-      <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
+      <div
+        style={{
+          display: "flex",
+          margin: "0 auto",
+          alignItems: "center",
+          gap: 12,
+          width: "50%",
+        }}
+      >
         <Text type="secondary" style={{ whiteSpace: "nowrap", fontSize: 13 }}>
           {index + 1} / {TOTAL_QUESTIONS}
         </Text>
@@ -124,6 +132,8 @@ const GameScreen = ({ level, clef, questions, onFinish }: Props) => {
           padding: "16px 8px 12px",
           boxShadow: "0 2px 12px rgba(0,0,0,0.08)",
           overflowX: "auto",
+          display: "flex",
+          justifyContent: "center",
         }}
       >
         <PianoKeyboard

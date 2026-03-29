@@ -17,6 +17,11 @@ const TREBLE_NOTES: NoteDefinition[] = [
   { vexNote: 'G/5', name: 'G', keyLabel: 'G5', octave: 5 },
   { vexNote: 'A/5', name: 'A', keyLabel: 'A5', octave: 5 },
   // Advanced: full chromatic (all accidentals in C4–A5 range)
+  { vexNote: 'G/3', name: 'G', keyLabel: 'G3', octave: 3 },
+  { vexNote: 'G#/3', name: 'G#', keyLabel: 'G#3', octave: 3 },
+  { vexNote: 'A/3', name: 'A', keyLabel: 'A3', octave: 3 },
+  { vexNote: 'Bb/3', name: 'Bb', keyLabel: 'Bb3', octave: 3 },
+  { vexNote: 'B/3', name: 'B', keyLabel: 'B3', octave: 3 },
   { vexNote: 'C#/4', name: 'C#', keyLabel: 'C#4', octave: 4 },
   { vexNote: 'Eb/4', name: 'Eb', keyLabel: 'Eb4', octave: 4 },
   { vexNote: 'F#/4', name: 'F#', keyLabel: 'F#4', octave: 4 },
@@ -26,6 +31,11 @@ const TREBLE_NOTES: NoteDefinition[] = [
   { vexNote: 'Eb/5', name: 'Eb', keyLabel: 'Eb5', octave: 5 },
   { vexNote: 'F#/5', name: 'F#', keyLabel: 'F#5', octave: 5 },
   { vexNote: 'Ab/5', name: 'Ab', keyLabel: 'Ab5', octave: 5 },
+  { vexNote: 'Bb/5', name: 'Bb', keyLabel: 'Bb5', octave: 5 },
+  { vexNote: 'B/5', name: 'B', keyLabel: 'B5', octave: 5 },
+  { vexNote: 'C/6', name: 'C', keyLabel: 'C6', octave: 6 },
+  { vexNote: 'C#/6', name: 'C#', keyLabel: 'C#6', octave: 6 },
+  { vexNote: 'D/6', name: 'D', keyLabel: 'D6', octave: 6 },
 ]
 
 const BASS_NOTES: NoteDefinition[] = [
@@ -44,7 +54,15 @@ const BASS_NOTES: NoteDefinition[] = [
   { vexNote: 'E/2', name: 'E', keyLabel: 'E2', octave: 2 },
   { vexNote: 'B/3', name: 'B', keyLabel: 'B3', octave: 3 },
   { vexNote: 'C/4', name: 'C', keyLabel: 'C4', octave: 4 },
-  // Advanced: full chromatic (all accidentals in E2–C4 range)
+  // Advanced: full chromatic (B1–F4)
+  // — extension below E2
+  { vexNote: 'Bb/1', name: 'Bb', keyLabel: 'Bb1', octave: 1 },
+  { vexNote: 'B/1',  name: 'B',  keyLabel: 'B1',  octave: 1 },
+  { vexNote: 'C/2',  name: 'C',  keyLabel: 'C2',  octave: 2 },
+  { vexNote: 'C#/2', name: 'C#', keyLabel: 'C#2', octave: 2 },
+  { vexNote: 'D/2',  name: 'D',  keyLabel: 'D2',  octave: 2 },
+  { vexNote: 'Eb/2', name: 'Eb', keyLabel: 'Eb2', octave: 2 },
+  // — accidentals in E2–C4 range
   { vexNote: 'F#/2', name: 'F#', keyLabel: 'F#2', octave: 2 },
   { vexNote: 'Ab/2', name: 'Ab', keyLabel: 'Ab2', octave: 2 },
   { vexNote: 'Bb/2', name: 'Bb', keyLabel: 'Bb2', octave: 2 },
@@ -53,6 +71,12 @@ const BASS_NOTES: NoteDefinition[] = [
   { vexNote: 'F#/3', name: 'F#', keyLabel: 'F#3', octave: 3 },
   { vexNote: 'Ab/3', name: 'Ab', keyLabel: 'Ab3', octave: 3 },
   { vexNote: 'Bb/3', name: 'Bb', keyLabel: 'Bb3', octave: 3 },
+  // — extension above C4
+  { vexNote: 'C#/4', name: 'C#', keyLabel: 'C#4', octave: 4 },
+  { vexNote: 'D/4',  name: 'D',  keyLabel: 'D4',  octave: 4 },
+  { vexNote: 'Eb/4', name: 'Eb', keyLabel: 'Eb4', octave: 4 },
+  { vexNote: 'E/4',  name: 'E',  keyLabel: 'E4',  octave: 4 },
+  { vexNote: 'F/4',  name: 'F',  keyLabel: 'F4',  octave: 4 },
 ]
 
 const LEVEL_NOTE_COUNT: Record<Level, number> = {
