@@ -1,33 +1,33 @@
-import { useState } from 'react'
-import { ConfigProvider, theme } from 'antd'
-import MenuScreen from './components/MenuScreen'
-import GameScreen from './components/GameScreen'
-import ResultsScreen from './components/ResultsScreen'
-import type { Answer, Clef, GamePhase, Level } from './types'
-import { generateQuestions } from './gameLogic'
+import { useState } from "react";
+import { ConfigProvider, theme } from "antd";
+import MenuScreen from "./components/MenuScreen";
+import GameScreen from "./components/GameScreen";
+import ResultsScreen from "./components/ResultsScreen";
+import type { Answer, Clef, GamePhase, Level } from "./types";
+import { generateQuestions } from "./gameLogic";
 
-export default function App() {
-  const [phase, setPhase] = useState<GamePhase>('menu')
-  const [level, setLevel] = useState<Level>('beginner')
-  const [clef, setClef] = useState<Clef>('treble')
-  const [answers, setAnswers] = useState<Answer[]>([])
+const App = () => {
+  const [phase, setPhase] = useState<GamePhase>("menu");
+  const [level, setLevel] = useState<Level>("beginner");
+  const [clef, setClef] = useState<Clef>("treble");
+  const [answers, setAnswers] = useState<Answer[]>([]);
 
-  function startGame(selectedLevel: Level, selectedClef: Clef) {
-    setLevel(selectedLevel)
-    setClef(selectedClef)
-    setAnswers([])
-    setPhase('playing')
-  }
+  const startGame = (selectedLevel: Level, selectedClef: Clef) => {
+    setLevel(selectedLevel);
+    setClef(selectedClef);
+    setAnswers([]);
+    setPhase("playing");
+  };
 
-  function finishGame(finalAnswers: Answer[]) {
-    setAnswers(finalAnswers)
-    setPhase('results')
-  }
+  const finishGame = (finalAnswers: Answer[]) => {
+    setAnswers(finalAnswers);
+    setPhase("results");
+  };
 
   return (
     <ConfigProvider theme={{ algorithm: theme.defaultAlgorithm }}>
-      {phase === 'menu' && <MenuScreen onStart={startGame} />}
-      {phase === 'playing' && (
+      {phase === "menu" && <MenuScreen onStart={startGame} />}
+      {phase === "playing" && (
         <GameScreen
           level={level}
           clef={clef}
@@ -35,14 +35,16 @@ export default function App() {
           onFinish={finishGame}
         />
       )}
-      {phase === 'results' && (
+      {phase === "results" && (
         <ResultsScreen
           answers={answers}
           level={level}
           clef={clef}
-          onRestart={() => setPhase('menu')}
+          onRestart={() => setPhase("menu")}
         />
       )}
     </ConfigProvider>
-  )
-}
+  );
+};
+
+export default App;

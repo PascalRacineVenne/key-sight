@@ -16,11 +16,16 @@ const TREBLE_NOTES: NoteDefinition[] = [
   { vexNote: 'C/4', name: 'C', keyLabel: 'C4', octave: 4 },
   { vexNote: 'G/5', name: 'G', keyLabel: 'G5', octave: 5 },
   { vexNote: 'A/5', name: 'A', keyLabel: 'A5', octave: 5 },
-  // Advanced adds accidentals
+  // Advanced: full chromatic (all accidentals in C4–A5 range)
+  { vexNote: 'C#/4', name: 'C#', keyLabel: 'C#4', octave: 4 },
+  { vexNote: 'Eb/4', name: 'Eb', keyLabel: 'Eb4', octave: 4 },
   { vexNote: 'F#/4', name: 'F#', keyLabel: 'F#4', octave: 4 },
-  { vexNote: 'C#/5', name: 'C#', keyLabel: 'C#5', octave: 5 },
+  { vexNote: 'Ab/4', name: 'Ab', keyLabel: 'Ab4', octave: 4 },
   { vexNote: 'Bb/4', name: 'Bb', keyLabel: 'Bb4', octave: 4 },
+  { vexNote: 'C#/5', name: 'C#', keyLabel: 'C#5', octave: 5 },
   { vexNote: 'Eb/5', name: 'Eb', keyLabel: 'Eb5', octave: 5 },
+  { vexNote: 'F#/5', name: 'F#', keyLabel: 'F#5', octave: 5 },
+  { vexNote: 'Ab/5', name: 'Ab', keyLabel: 'Ab5', octave: 5 },
 ]
 
 const BASS_NOTES: NoteDefinition[] = [
@@ -39,24 +44,26 @@ const BASS_NOTES: NoteDefinition[] = [
   { vexNote: 'E/2', name: 'E', keyLabel: 'E2', octave: 2 },
   { vexNote: 'B/3', name: 'B', keyLabel: 'B3', octave: 3 },
   { vexNote: 'C/4', name: 'C', keyLabel: 'C4', octave: 4 },
-  // Advanced
+  // Advanced: full chromatic (all accidentals in E2–C4 range)
   { vexNote: 'F#/2', name: 'F#', keyLabel: 'F#2', octave: 2 },
+  { vexNote: 'Ab/2', name: 'Ab', keyLabel: 'Ab2', octave: 2 },
   { vexNote: 'Bb/2', name: 'Bb', keyLabel: 'Bb2', octave: 2 },
   { vexNote: 'C#/3', name: 'C#', keyLabel: 'C#3', octave: 3 },
   { vexNote: 'Eb/3', name: 'Eb', keyLabel: 'Eb3', octave: 3 },
+  { vexNote: 'F#/3', name: 'F#', keyLabel: 'F#3', octave: 3 },
+  { vexNote: 'Ab/3', name: 'Ab', keyLabel: 'Ab3', octave: 3 },
+  { vexNote: 'Bb/3', name: 'Bb', keyLabel: 'Bb3', octave: 3 },
 ]
 
 const LEVEL_NOTE_COUNT: Record<Level, number> = {
   beginner: 9,
   intermediate: 13,
-  advanced: 17,
+  advanced: 100, // use all notes (full chromatic)
 }
 
 export const TOTAL_QUESTIONS = 20
 
-function pickNotes(all: NoteDefinition[], count: number): NoteDefinition[] {
-  return all.slice(0, count)
-}
+const pickNotes = (all: NoteDefinition[], count: number): NoteDefinition[] => all.slice(0, count)
 
 function shuffle<T>(arr: T[]): T[] {
   const a = [...arr]
@@ -67,7 +74,7 @@ function shuffle<T>(arr: T[]): T[] {
   return a
 }
 
-export function generateQuestions(level: Level, clef: Clef): Question[] {
+export const generateQuestions = (level: Level, clef: Clef): Question[]  => {
   const pool = clef === 'treble' ? TREBLE_NOTES : BASS_NOTES
   const notes = pickNotes(pool, LEVEL_NOTE_COUNT[level])
   // Ensure each note appears at least once, then fill up to TOTAL_QUESTIONS
@@ -80,7 +87,7 @@ export function generateQuestions(level: Level, clef: Clef): Question[] {
     .map((note) => ({ note, clef }))
 }
 
-export function getKeyboardNotes(level: Level, clef: Clef): NoteDefinition[] {
+export const getKeyboardNotes = (level: Level, clef: Clef): NoteDefinition[] => {
   const pool = clef === 'treble' ? TREBLE_NOTES : BASS_NOTES
   return pickNotes(pool, LEVEL_NOTE_COUNT[level])
 }
