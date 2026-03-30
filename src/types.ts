@@ -2,6 +2,8 @@ export type Clef = 'treble' | 'bass'
 
 export type Level = 'beginner' | 'intermediate' | 'advanced'
 
+export type Feedback = "none" | "correct" | "incorrect";
+
 export interface NoteDefinition {
   /** VexFlow note name e.g. "C/4" */
   vexNote: string
