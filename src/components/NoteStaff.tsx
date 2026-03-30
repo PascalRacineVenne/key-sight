@@ -59,9 +59,9 @@ const NoteStaff = ({ question, feedback }: Props) => {
     }
 
     // Color for feedback
-    if (feedback === FEEDBACK_OPTIONS.correct) {
+    if (feedback === FEEDBACK_OPTIONS.CORRECT) {
       note.setStyle({ fillStyle: "#52c41a", strokeStyle: "#52c41a" });
-    } else if (feedback === FEEDBACK_OPTIONS.incorrect) {
+    } else if (feedback === FEEDBACK_OPTIONS.INCORRECT) {
       note.setStyle({ fillStyle: "#ff4d4f", strokeStyle: "#ff4d4f" });
     }
 
