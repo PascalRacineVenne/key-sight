@@ -7,11 +7,12 @@ import {
   Formatter,
   Accidental,
 } from "vexflow";
-import type { Question } from "../types";
+import type { Feedback, Question } from "../types";
+import { FEEDBACK_OPTIONS } from "./GameScreen";
 
 interface Props {
   question: Question;
-  feedback: "none" | "correct" | "incorrect";
+  feedback: Feedback;
 }
 
 const NoteStaff = ({ question, feedback }: Props) => {
@@ -58,9 +59,9 @@ const NoteStaff = ({ question, feedback }: Props) => {
     }
 
     // Color for feedback
-    if (feedback === "correct") {
+    if (feedback === FEEDBACK_OPTIONS.correct) {
       note.setStyle({ fillStyle: "#52c41a", strokeStyle: "#52c41a" });
-    } else if (feedback === "incorrect") {
+    } else if (feedback === FEEDBACK_OPTIONS.incorrect) {
       note.setStyle({ fillStyle: "#ff4d4f", strokeStyle: "#ff4d4f" });
     }
 

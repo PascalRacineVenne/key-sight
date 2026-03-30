@@ -2,7 +2,7 @@ import { useState, useCallback } from "react";
 import { Button, Progress, Typography } from "antd";
 import NoteStaff from "./NoteStaff";
 import PianoKeyboard from "./PianoKeyboard";
-import type { Answer, Clef, Level, Question } from "../types";
+import type { Answer, Clef, Feedback, Level, Question } from "../types";
 import { getKeyboardNotes, TOTAL_QUESTIONS } from "../gameLogic";
 
 const { Text } = Typography;
@@ -14,23 +14,29 @@ interface Props {
   onFinish: (answers: Answer[]) => void;
 }
 
-type Feedback = "none" | "correct" | "incorrect";
+export const FEEDBACK_OPTIONS: Record<string, Feedback> = {
+  none: "none",
+  correct: "correct",
+  incorrect: "incorrect",
+};
 
 const GameScreen = ({ level, clef, questions, onFinish }: Props) => {
   const [index, setIndex] = useState(0);
   const [answers, setAnswers] = useState<Answer[]>([]);
   const [selectedKey, setSelectedKey] = useState<string | null>(null);
-  const [feedback, setFeedback] = useState<Feedback>("none");
+  const [feedback, setFeedback] = useState<Feedback>(FEEDBACK_OPTIONS.none);
 
   const current = questions[index];
   const keyboardNotes = getKeyboardNotes(level, clef);
 
   const handleSelect = useCallback(
     (keyLabel: string) => {
-      if (feedback !== "none") return;
+      if (feedback !== FEEDBACK_OPTIONS.none) return;
       const correct = keyLabel === current.note.keyLabel;
       setSelectedKey(keyLabel);
-      setFeedback(correct ? "correct" : "incorrect");
+      setFeedback(
+        correct ? FEEDBACK_OPTIONS.correct : FEEDBACK_OPTIONS.incorrect,
+      );
     },
     [feedback, current],
   );
@@ -49,7 +55,7 @@ const GameScreen = ({ level, clef, questions, onFinish }: Props) => {
       setAnswers(newAnswers);
       setIndex(index + 1);
       setSelectedKey(null);
-      setFeedback("none");
+      setFeedback(FEEDBACK_OPTIONS.none);
     }
   };
 
@@ -108,7 +114,7 @@ const GameScreen = ({ level, clef, questions, onFinish }: Props) => {
       >
         <NoteStaff question={current} feedback={feedback} />
 
-        {feedback !== "none" && (
+        {feedback !== FEEDBACK_OPTIONS.none && (
           <div
             style={{
               textAlign: "center",
@@ -117,7 +123,7 @@ const GameScreen = ({ level, clef, questions, onFinish }: Props) => {
               color: feedback === "correct" ? "#52c41a" : "#ff4d4f",
             }}
           >
-            {feedback === "correct"
+            {feedback === FEEDBACK_OPTIONS.correct
               ? "Correct!"
               : `Incorrect — it was ${current.note.name}`}
           </div>
@@ -139,9 +145,11 @@ const GameScreen = ({ level, clef, questions, onFinish }: Props) => {
         <PianoKeyboard
           notes={keyboardNotes}
           onSelect={handleSelect}
-          disabled={feedback !== "none"}
+          disabled={feedback !== FEEDBACK_OPTIONS.none}
           selectedKey={selectedKey}
-          correctKey={feedback !== "none" ? current.note.keyLabel : null}
+          correctKey={
+            feedback !== FEEDBACK_OPTIONS.none ? current.note.keyLabel : null
+          }
         />
       </div>
 
@@ -150,7 +158,7 @@ const GameScreen = ({ level, clef, questions, onFinish }: Props) => {
         type="primary"
         size="large"
         block
-        disabled={feedback === "none"}
+        disabled={feedback === FEEDBACK_OPTIONS.none}
         onClick={handleNext}
         style={{ height: 52, fontSize: 17, borderRadius: 12 }}
       >

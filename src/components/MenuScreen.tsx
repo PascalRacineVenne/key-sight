@@ -3,14 +3,24 @@ import { Button, Card, Radio, Space, Typography } from "antd";
 import type { Clef, Level } from "../types";
 
 const { Title, Text } = Typography;
+const CLEF_OPTIONS: Record<string, Clef> = {
+  treble: "treble",
+  bass: "bass",
+};
+
+const LEVEL_OPTIONS: Record<string, Level> = {
+  beginner: "beginner",
+  intermediate: "intermediate",
+  advanced: "advanced",
+};
 
 interface Props {
   onStart: (level: Level, clef: Clef) => void;
 }
 
 const MenuScreen = ({ onStart }: Props) => {
-  const [level, setLevel] = useState<Level>("beginner");
-  const [clef, setClef] = useState<Clef>("treble");
+  const [level, setLevel] = useState<Level>(LEVEL_OPTIONS.advanced);
+  const [clef, setClef] = useState<Clef>(CLEF_OPTIONS.treble);
 
   return (
     <div
@@ -45,13 +55,13 @@ const MenuScreen = ({ onStart }: Props) => {
               style={{ display: "flex", gap: 12, marginTop: 8 }}
             >
               <Radio.Button
-                value="treble"
+                value={CLEF_OPTIONS.treble}
                 style={{ flex: 1, textAlign: "center" }}
               >
                 Treble (G)
               </Radio.Button>
               <Radio.Button
-                value="bass"
+                value={CLEF_OPTIONS.bass}
                 style={{ flex: 1, textAlign: "center" }}
               >
                 Bass (F)
@@ -71,16 +81,22 @@ const MenuScreen = ({ onStart }: Props) => {
                 marginTop: 8,
               }}
             >
-              <Radio.Button value="beginner" style={{ textAlign: "center" }}>
+              <Radio.Button
+                value={LEVEL_OPTIONS.beginner}
+                style={{ textAlign: "center" }}
+              >
                 Beginner — Staff notes only
               </Radio.Button>
               <Radio.Button
-                value="intermediate"
+                value={LEVEL_OPTIONS.intermediate}
                 style={{ textAlign: "center" }}
               >
                 Intermediate — + Ledger lines
               </Radio.Button>
-              <Radio.Button value="advanced" style={{ textAlign: "center" }}>
+              <Radio.Button
+                value={LEVEL_OPTIONS.advanced}
+                style={{ textAlign: "center" }}
+              >
                 Advanced — + Accidentals
               </Radio.Button>
             </Radio.Group>
