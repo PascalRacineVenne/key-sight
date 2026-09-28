@@ -1,14 +1,7 @@
-import { useEffect, useRef } from "react";
-import {
-  Renderer,
-  Stave,
-  StaveNote,
-  Voice,
-  Formatter,
-  Accidental,
-} from "vexflow";
+import { useEffect, useId, useRef } from "react";
+import { Factory } from "vexflow";
 import type { Feedback, Question } from "../types";
-import { FEEDBACK_OPTIONS } from "./GameScreen";
+import { FEEDBACK_COLORS, STAFF_SIZE } from "../constants";
 import { styles } from "./NoteStaff.styles";
 
 interface Props {
@@ -17,6 +10,7 @@ interface Props {
 }
 
 const NoteStaff = ({ question, feedback }: Props) => {
+  const id = useId();
   const containerRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -25,55 +19,34 @@ const NoteStaff = ({ question, feedback }: Props) => {
 
     container.innerHTML = "";
 
-    const width = container.clientWidth || 320;
-    const height = 160;
+    const factory = new Factory({
+      renderer: { elementId: id, ...STAFF_SIZE },
+    });
+    const score = factory.EasyScore();
 
-    const renderer = new Renderer(container, Renderer.Backends.SVG);
-    renderer.resize(width, height);
-    const context = renderer.getContext();
-    context.setFont("Arial", 10);
-
-    const stave = new Stave(10, 20, width - 20);
-    stave.addClef(question.clef);
-    stave.setContext(context).draw();
-
-    // Parse vexNote like "F#/4" → keys: ["f#/4"], accidental on 0 if needed
-    const raw = question.note.vexNote.toLowerCase();
-    const keys = [raw];
-
-    const note = new StaveNote({
-      keys,
-      duration: "w",
+    const notes = score.notes(`${question.note.keyLabel}/w`, {
       clef: question.clef,
     });
 
-    // Add accidental if needed
-    const noteName = question.note.vexNote;
-    if (noteName.includes("#")) {
-      note.addModifier(new Accidental("#"), 0);
-    } else if (noteName.toLowerCase().includes("b") && noteName.length > 2) {
-      // "Bb/4" — only add flat if there's a 'b' after the note letter
-      const letter = noteName[0].toLowerCase();
-      if (letter !== "b" || noteName[1] === "b") {
-        note.addModifier(new Accidental("b"), 0);
-      }
+    if (feedback !== "none") {
+      const color = FEEDBACK_COLORS[feedback];
+      notes[0].setStyle({ fillStyle: color, strokeStyle: color });
     }
 
-    // Color for feedback
-    if (feedback === FEEDBACK_OPTIONS.CORRECT) {
-      note.setStyle({ fillStyle: "#52c41a", strokeStyle: "#52c41a" });
-    } else if (feedback === FEEDBACK_OPTIONS.INCORRECT) {
-      note.setStyle({ fillStyle: "#ff4d4f", strokeStyle: "#ff4d4f" });
-    }
+    factory
+      .System({ x: 5, y: 5, width: STAFF_SIZE.width - 10 })
+      .addStave({ voices: [score.voice(notes)] })
+      .addClef(question.clef, "small");
 
-    const voice = new Voice({ numBeats: 4, beatValue: 4 });
-    voice.addTickable(note);
+    factory.draw();
 
-    new Formatter().joinVoices([voice]).format([voice], width - 80);
-    voice.draw(context, stave);
-  }, [question, feedback]);
+    // VexFlow sets a fixed inline size on the SVG; clear it so CSS can scale it
+    const svg = container.querySelector("svg");
+    svg?.style.removeProperty("width");
+    svg?.style.removeProperty("height");
+  }, [id, question, feedback]);
 
-  return <div ref={containerRef} className={styles.staff} />;
+  return <div id={id} ref={containerRef} className={styles.staff} />;
 };
 
 export default NoteStaff;

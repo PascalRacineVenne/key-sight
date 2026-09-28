@@ -1,4 +1,5 @@
 import { css } from "@linaria/core";
+import { FEEDBACK_COLORS } from "../constants";
 
 // Key sizes depend on the viewport, so the component sets them as
 // CSS variables on the keyboard: --key-width, --white-height,
@@ -6,6 +7,8 @@ import { css } from "@linaria/core";
 export const styles = {
   keyboard: css`
     position: relative;
+    width: max-content;
+    min-width: max-content;
     height: calc(var(--white-height) + 2px);
     touch-action: manipulation;
   `,
@@ -18,15 +21,34 @@ export const styles = {
     border-radius: 0 0 6px 6px;
     cursor: pointer;
     position: relative;
+    flex: 0 0 var(--key-width);
     z-index: 1;
     display: flex;
     align-items: flex-end;
     justify-content: center;
     padding-bottom: 4px;
-    font-size: 10px;
+    font-size: 11px;
     font-weight: 600;
     color: #555;
-    transition: background 0.15s;
+    transition:
+      background 0.15s,
+      border-color 0.15s,
+      transform 0.1s;
+
+    &:hover:not(:disabled) {
+      background: #eaf4ff;
+      border-color: #69aef0;
+    }
+
+    &:active:not(:disabled) {
+      transform: translateY(1px);
+    }
+
+    &:focus-visible {
+      z-index: 3;
+      outline: 3px solid #1677ff;
+      outline-offset: 2px;
+    }
 
     &:disabled {
       cursor: default;
@@ -47,10 +69,26 @@ export const styles = {
     align-items: flex-end;
     justify-content: center;
     padding-bottom: 2px;
-    font-size: 8px;
+    font-size: 9px;
     font-weight: 600;
     color: #ccc;
-    transition: background 0.15s;
+    transition:
+      background 0.15s,
+      transform 0.1s;
+
+    &:hover:not(:disabled) {
+      background: #46515a;
+    }
+
+    &:active:not(:disabled) {
+      transform: translateY(1px);
+    }
+
+    &:focus-visible {
+      z-index: 4;
+      outline: 3px solid #1677ff;
+      outline-offset: 2px;
+    }
 
     &:disabled {
       cursor: default;
@@ -59,13 +97,13 @@ export const styles = {
 
   correct: css`
     && {
-      background: #52c41a;
+      background: ${FEEDBACK_COLORS.correct};
     }
   `,
 
   incorrect: css`
     && {
-      background: #ff4d4f;
+      background: ${FEEDBACK_COLORS.incorrect};
     }
   `,
 

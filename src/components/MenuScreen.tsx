@@ -38,7 +38,7 @@ const MenuScreen = ({ onStart }: Props) => {
             <Text strong>Clef</Text>
             <Radio.Group
               value={clef}
-              onChange={(e) => setClef(e.target.value as Clef)}
+              onChange={(event) => setClef(event.target.value as Clef)}
               className={styles.clefGroup}
             >
               <Radio.Button
@@ -60,7 +60,7 @@ const MenuScreen = ({ onStart }: Props) => {
             <Text strong>Level</Text>
             <Radio.Group
               value={level}
-              onChange={(e) => setLevel(e.target.value as Level)}
+              onChange={(event) => setLevel(event.target.value as Level)}
               className={styles.levelGroup}
             >
               <Radio.Button
