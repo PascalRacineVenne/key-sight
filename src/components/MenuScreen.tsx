@@ -29,7 +29,7 @@ const MenuScreen = ({ onStart }: Props) => {
         <Space direction="vertical" size="large" className={styles.content}>
           <div>
             <Title level={2} className={styles.title}>
-              Note Reader
+              KeySight
             </Title>
             <Text type="secondary">Sight-reading practice</Text>
           </div>

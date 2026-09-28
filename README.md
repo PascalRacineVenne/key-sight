@@ -1,10 +1,10 @@
-# Note Reader
+# KeySight
 
 A sight-reading practice app for musicians learning to identify notes on the musical staff.
 
 ## What it does
 
-Note Reader displays a random note on a staff and asks you to identify it by tapping the correct key on an on-screen piano keyboard. After 20 questions, you get a score with a breakdown of every answer.
+KeySight displays a random note on a staff and asks you to identify it by tapping the correct key on an on-screen piano keyboard. After 20 questions, you get a score with a breakdown of every answer.
 
 ### Clefs
 

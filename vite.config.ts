@@ -13,8 +13,8 @@ export default defineConfig({
       registerType: "autoUpdate",
       includeAssets: ["favicon.ico", "apple-touch-icon.png"],
       manifest: {
-        name: "Note Reader",
-        short_name: "NoteReader",
+        name: "KeySight",
+        short_name: "KeySight",
         description: "Sight-reading practice game for F and G clef",
         theme_color: "#1677ff",
         background_color: "#ffffff",
