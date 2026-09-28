@@ -1,13 +1,17 @@
-import { useState, useCallback } from "react";
-import { Button, Flex, Progress, Typography } from "antd";
+import { useState, useCallback, useEffect } from "react";
+import { Flex, Progress, Slider, Switch, Typography } from "antd";
 import { cx } from "@linaria/core";
 import NoteStaff from "./NoteStaff";
 import PianoKeyboard from "./PianoKeyboard";
 import type { Answer, Clef, Feedback, Level, Question } from "../types";
 import { getKeyboardNotes, TOTAL_QUESTIONS } from "../gameLogic";
+import { NEXT_QUESTION_DELAY_MS } from "../constants";
+import { playNote } from "../audio";
 import { styles } from "./GameScreen.styles";
 
 const { Text } = Typography;
+
+const formatSeconds = (ms: number) => `${(ms / 1000).toFixed(2)} s`;
 
 interface Props {
   level: Level;
@@ -27,9 +31,18 @@ const GameScreen = ({ level, clef, questions, onFinish }: Props) => {
   const [answers, setAnswers] = useState<Answer[]>([]);
   const [selectedKey, setSelectedKey] = useState<string | null>(null);
   const [feedback, setFeedback] = useState<Feedback>(FEEDBACK_OPTIONS.NONE);
+  const [nextDelayMs, setNextDelayMs] = useState<number>(
+    NEXT_QUESTION_DELAY_MS.default,
+  );
+  const [playNoteFirst, setPlayNoteFirst] = useState(true);
 
   const current = questions[index];
   const keyboardNotes = getKeyboardNotes(level, clef);
+
+  useEffect(() => {
+    if (feedback !== FEEDBACK_OPTIONS.NONE || !playNoteFirst) return;
+    void playNote(current.note.keyLabel);
+  }, [current, feedback, playNoteFirst]);
 
   const handleSelect = useCallback(
     (keyLabel: string) => {
@@ -43,28 +56,40 @@ const GameScreen = ({ level, clef, questions, onFinish }: Props) => {
     [feedback, current],
   );
 
-  const handleNext = () => {
-    const newAnswer: Answer = {
-      question: current,
-      selected: selectedKey,
-      correct: selectedKey === current.note.keyLabel,
-    };
-    const newAnswers = [...answers, newAnswer];
+  // Once answered, move on automatically (or finish after the last question)
+  useEffect(() => {
+    if (feedback === FEEDBACK_OPTIONS.NONE) return;
 
-    if (index + 1 >= TOTAL_QUESTIONS) {
-      onFinish(newAnswers);
-    } else {
-      setAnswers(newAnswers);
-      setIndex(index + 1);
-      setSelectedKey(null);
-      setFeedback(FEEDBACK_OPTIONS.NONE);
-    }
-  };
+    const delayMs =
+      feedback === FEEDBACK_OPTIONS.INCORRECT
+        ? Math.max(nextDelayMs, NEXT_QUESTION_DELAY_MS.minAfterIncorrect)
+        : nextDelayMs;
 
-  const progressPercent = Math.round((index / TOTAL_QUESTIONS) * 100);
+    const timer = setTimeout(() => {
+      const newAnswer: Answer = {
+        question: current,
+        selected: selectedKey,
+        correct: selectedKey === current.note.keyLabel,
+      };
+      const newAnswers = [...answers, newAnswer];
+
+      if (index + 1 >= TOTAL_QUESTIONS) {
+        onFinish(newAnswers);
+      } else {
+        setAnswers(newAnswers);
+        setIndex(index + 1);
+        setSelectedKey(null);
+        setFeedback(FEEDBACK_OPTIONS.NONE);
+      }
+    }, delayMs);
+
+    return () => clearTimeout(timer);
+  }, [feedback, current, selectedKey, answers, index, onFinish, nextDelayMs]);
+
+  const progressPercent = Math.round(((index + 1) / TOTAL_QUESTIONS) * 100);
 
   return (
-    <Flex vertical gap={12} className={styles.screen}>
+    <Flex vertical gap={10} className={styles.screen}>
       {/* Header */}
       <Flex align="center" gap={12} className={styles.header}>
         <Text type="secondary" className={styles.meta}>
@@ -74,34 +99,75 @@ const GameScreen = ({ level, clef, questions, onFinish }: Props) => {
           percent={progressPercent}
           showInfo={false}
           className={styles.progress}
+          aria-label={`Question ${index + 1} of ${TOTAL_QUESTIONS}`}
         />
         <Text type="secondary" className={cx(styles.meta, styles.capitalize)}>
-          {level}
+          {level} · {clef} clef
         </Text>
       </Flex>
 
       {/* Staff */}
-      <Flex vertical justify="center" gap={8} flex={1}>
+      <Flex
+        vertical
+        justify="center"
+        gap={10}
+        flex={1}
+        className={styles.playArea}
+      >
+        <Flex align="center" className={styles.practiceControls}>
+          <Flex align="center" gap={12} className={styles.delayControl}>
+            <Text type="secondary" className={styles.meta}>
+              Next note
+            </Text>
+            <Slider
+              min={NEXT_QUESTION_DELAY_MS.min}
+              max={NEXT_QUESTION_DELAY_MS.max}
+              step={NEXT_QUESTION_DELAY_MS.step}
+              value={nextDelayMs}
+              onChange={setNextDelayMs}
+              tooltip={{ formatter: (ms) => formatSeconds(ms ?? 0) }}
+              aria-label="Delay before next note"
+              className={styles.delaySlider}
+            />
+            <Text
+              type="secondary"
+              className={cx(styles.meta, styles.delayValue)}
+            >
+              {formatSeconds(nextDelayMs)}
+            </Text>
+          </Flex>
+          <Flex align="center" gap={8} className={styles.audioControl}>
+            <Text type="secondary" className={styles.meta}>
+              Play note first
+            </Text>
+            <Switch
+              checked={playNoteFirst}
+              onChange={setPlayNoteFirst}
+              aria-label="Play each note before answering"
+            />
+          </Flex>
+        </Flex>
+
         <NoteStaff question={current} feedback={feedback} />
 
-        {feedback !== FEEDBACK_OPTIONS.NONE && (
-          <div
-            className={cx(
-              styles.feedback,
-              feedback === FEEDBACK_OPTIONS.CORRECT
-                ? styles.correct
-                : styles.incorrect,
-            )}
-          >
-            {feedback === FEEDBACK_OPTIONS.CORRECT
-              ? "Correct!"
-              : `Incorrect — it was ${current.note.name}`}
-          </div>
-        )}
+        {/* Always rendered with a fixed height so showing the message
+            doesn't shift the layout */}
+        <div
+          aria-live="polite"
+          className={cx(
+            styles.feedback,
+            feedback === FEEDBACK_OPTIONS.CORRECT && styles.correct,
+            feedback === FEEDBACK_OPTIONS.INCORRECT && styles.incorrect,
+          )}
+        >
+          {feedback === FEEDBACK_OPTIONS.CORRECT && "Correct!"}
+          {feedback === FEEDBACK_OPTIONS.INCORRECT &&
+            `Incorrect — it was ${current.note.name}`}
+        </div>
       </Flex>
 
       {/* Keyboard */}
-      <Flex justify="center" className={styles.keyboardPanel}>
+      <Flex className={styles.keyboardPanel}>
         <PianoKeyboard
           notes={keyboardNotes}
           onSelect={handleSelect}
@@ -112,18 +178,6 @@ const GameScreen = ({ level, clef, questions, onFinish }: Props) => {
           }
         />
       </Flex>
-
-      {/* Next button */}
-      <Button
-        type="primary"
-        size="large"
-        block
-        disabled={feedback === FEEDBACK_OPTIONS.NONE}
-        onClick={handleNext}
-        className={styles.nextButton}
-      >
-        {index + 1 >= TOTAL_QUESTIONS ? "See Results" : "Next"}
-      </Button>
     </Flex>
   );
 };

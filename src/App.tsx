@@ -5,6 +5,7 @@ import GameScreen from "./components/GameScreen";
 import ResultsScreen from "./components/ResultsScreen";
 import type { Answer, Clef, GamePhase, Level } from "./types";
 import { generateQuestions } from "./gameLogic";
+import { startAudio } from "./audio";
 
 const App = () => {
   const [phase, setPhase] = useState<GamePhase>("menu");
@@ -13,6 +14,7 @@ const App = () => {
   const [answers, setAnswers] = useState<Answer[]>([]);
 
   const startGame = (selectedLevel: Level, selectedClef: Clef) => {
+    void startAudio();
     setLevel(selectedLevel);
     setClef(selectedClef);
     setAnswers([]);

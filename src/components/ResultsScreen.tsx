@@ -1,6 +1,7 @@
 import { Button, Card, Flex, Progress, Space, Typography } from "antd";
 import type { Answer, Clef, Level } from "../types";
 import { TOTAL_QUESTIONS } from "../gameLogic";
+import { FEEDBACK_COLORS } from "../constants";
 import { styles } from "./ResultsScreen.styles";
 
 const { Title, Text } = Typography;
@@ -15,28 +16,28 @@ interface Props {
 const getGrade = (score: number): { label: string; color: string } => {
   const pct = (score / TOTAL_QUESTIONS) * 100;
   if (pct === 100) return { label: "Perfect!", color: "#722ed1" };
-  if (pct >= 85) return { label: "Excellent", color: "#52c41a" };
+  if (pct >= 85) return { label: "Excellent", color: FEEDBACK_COLORS.correct };
   if (pct >= 70) return { label: "Good", color: "#1677ff" };
   if (pct >= 50) return { label: "Keep practicing", color: "#fa8c16" };
-  return { label: "Keep going!", color: "#ff4d4f" };
+  return { label: "Keep going!", color: FEEDBACK_COLORS.incorrect };
 };
 
 const ResultsScreen = ({ answers, level, clef, onRestart }: Props) => {
-  const score = answers.filter((a) => a.correct).length;
+  const score = answers.filter((answer) => answer.correct).length;
   const percent = Math.round((score / TOTAL_QUESTIONS) * 100);
   const grade = getGrade(score);
 
   // Find most missed notes
   const missed = answers
-    .filter((a) => !a.correct)
-    .reduce<Record<string, number>>((acc, a) => {
-      const n = a.question.note.name;
-      acc[n] = (acc[n] ?? 0) + 1;
-      return acc;
+    .filter((answer) => !answer.correct)
+    .reduce<Record<string, number>>((missedCounts, answer) => {
+      const noteName = answer.question.note.name;
+      missedCounts[noteName] = (missedCounts[noteName] ?? 0) + 1;
+      return missedCounts;
     }, {});
 
   const missedSorted = Object.entries(missed)
-    .sort((a, b) => b[1] - a[1])
+    .sort((leftEntry, rightEntry) => rightEntry[1] - leftEntry[1])
     .slice(0, 3);
 
   return (

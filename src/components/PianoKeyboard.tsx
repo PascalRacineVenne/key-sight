@@ -2,6 +2,7 @@ import type { CSSProperties } from "react";
 import { Flex } from "antd";
 import { cx } from "@linaria/core";
 import type { NoteDefinition } from "../types";
+import { playNote } from "../audio";
 import { styles } from "./PianoKeyboard.styles";
 
 interface Props {
@@ -45,28 +46,32 @@ const PianoKeyboard = ({
   selectedKey,
   correctKey,
 }: Props) => {
-  const sorted = [...notes].sort((a, b) => pitchIndex(a) - pitchIndex(b));
-  const whiteKeys = sorted.filter((n) => !isBlack(n.name));
-  const blackKeys = sorted.filter((n) => isBlack(n.name));
-
-  const keyWidth = Math.min(
-    52,
-    Math.floor((window.innerWidth - 32) / Math.max(whiteKeys.length, 1)),
+  const sorted = [...notes].sort(
+    (leftNote, rightNote) => pitchIndex(leftNote) - pitchIndex(rightNote),
   );
+  const whiteKeys = sorted.filter((note) => !isBlack(note.name));
+  const blackKeys = sorted.filter((note) => isBlack(note.name));
+
+  const keyWidth = 52;
   const whiteHeight = keyWidth * 2.8;
   const blackHeight = whiteHeight * 0.6;
   const blackWidth = keyWidth * 0.6;
 
-  function getKeyStateClass(note: NoteDefinition) {
+  const handlePress = (note: NoteDefinition) => {
+    void playNote(note.keyLabel);
+    onSelect(note.keyLabel);
+  };
+
+  const getKeyStateClass = (note: NoteDefinition) => {
     if (note.keyLabel === correctKey && selectedKey !== null)
       return styles.correct;
     if (note.keyLabel === selectedKey && note.keyLabel !== correctKey)
       return styles.incorrect;
     return null;
-  }
+  };
 
   // Map black key to position between white keys
-  function blackKeyLeft(note: NoteDefinition): number {
+  const blackKeyLeft = (note: NoteDefinition): number => {
     const name = note.name.replace(/\d/, "");
     const octave = note.octave;
     // find the white key to the left
@@ -85,11 +90,11 @@ const PianoKeyboard = ({
     const leftName = leftWhiteMap[name];
     if (!leftName) return 0;
     const idx = whiteKeys.findIndex(
-      (w) => w.name === leftName && w.octave === octave,
+      (whiteKey) => whiteKey.name === leftName && whiteKey.octave === octave,
     );
     if (idx === -1) return -999;
     return idx * keyWidth + keyWidth - blackWidth / 2;
-  }
+  };
 
   const sizeVars = {
     "--key-width": `${keyWidth}px`,
@@ -104,11 +109,12 @@ const PianoKeyboard = ({
       {whiteKeys.map((note) => (
         <button
           key={note.keyLabel}
+          aria-label={note.keyLabel}
           disabled={disabled}
-          onClick={() => onSelect(note.keyLabel)}
+          onClick={() => handlePress(note)}
           className={cx(styles.whiteKey, getKeyStateClass(note))}
         >
-          {note.name}
+          {note.keyLabel}
           {note.keyLabel === "C4" && <span className={styles.middleC} />}
         </button>
       ))}
@@ -121,8 +127,9 @@ const PianoKeyboard = ({
         return (
           <button
             key={note.keyLabel}
+            aria-label={note.keyLabel}
             disabled={disabled}
-            onClick={() => onSelect(note.keyLabel)}
+            onClick={() => handlePress(note)}
             className={cx(
               styles.blackKey,
               stateClass,
@@ -130,7 +137,7 @@ const PianoKeyboard = ({
             )}
             style={{ left }}
           >
-            {note.name}
+            {note.keyLabel}
           </button>
         );
       })}
