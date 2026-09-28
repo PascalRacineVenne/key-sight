@@ -1,4 +1,8 @@
+import type { CSSProperties } from "react";
+import { Flex } from "antd";
+import { cx } from "@linaria/core";
 import type { NoteDefinition } from "../types";
+import { styles } from "./PianoKeyboard.styles";
 
 interface Props {
   notes: NoteDefinition[];
@@ -53,11 +57,12 @@ const PianoKeyboard = ({
   const blackHeight = whiteHeight * 0.6;
   const blackWidth = keyWidth * 0.6;
 
-  function getKeyColor(note: NoteDefinition, baseWhite: boolean) {
-    if (note.keyLabel === correctKey && selectedKey !== null) return "#52c41a";
+  function getKeyStateClass(note: NoteDefinition) {
+    if (note.keyLabel === correctKey && selectedKey !== null)
+      return styles.correct;
     if (note.keyLabel === selectedKey && note.keyLabel !== correctKey)
-      return "#ff4d4f";
-    return baseWhite ? "#fff" : "#222";
+      return styles.incorrect;
+    return null;
   }
 
   // Map black key to position between white keys
@@ -86,56 +91,25 @@ const PianoKeyboard = ({
     return idx * keyWidth + keyWidth - blackWidth / 2;
   }
 
+  const sizeVars = {
+    "--key-width": `${keyWidth}px`,
+    "--white-height": `${whiteHeight}px`,
+    "--black-width": `${blackWidth}px`,
+    "--black-height": `${blackHeight}px`,
+  } as CSSProperties;
+
   return (
-    <div
-      style={{
-        position: "relative",
-        height: whiteHeight + 2,
-        display: "flex",
-        touchAction: "manipulation",
-      }}
-    >
+    <Flex className={styles.keyboard} style={sizeVars}>
       {/* White keys */}
       {whiteKeys.map((note) => (
         <button
           key={note.keyLabel}
           disabled={disabled}
           onClick={() => onSelect(note.keyLabel)}
-          style={{
-            width: keyWidth,
-            height: whiteHeight,
-            background: getKeyColor(note, true),
-            border: "1px solid #bbb",
-            borderRadius: "0 0 6px 6px",
-            cursor: disabled ? "default" : "pointer",
-            position: "relative",
-            zIndex: 1,
-            display: "flex",
-            alignItems: "flex-end",
-            justifyContent: "center",
-            paddingBottom: 4,
-            fontSize: 10,
-            fontWeight: 600,
-            color: "#555",
-            transition: "background 0.15s",
-          }}
+          className={cx(styles.whiteKey, getKeyStateClass(note))}
         >
           {note.name}
-          {note.keyLabel === "C4" && (
-            <span
-              style={{
-                position: "absolute",
-                bottom: 24,
-                left: "50%",
-                transform: "translateX(-50%)",
-                width: 8,
-                height: 8,
-                borderRadius: "50%",
-                background: "#1163c7",
-                pointerEvents: "none",
-              }}
-            />
-          )}
+          {note.keyLabel === "C4" && <span className={styles.middleC} />}
         </button>
       ))}
 
@@ -143,42 +117,24 @@ const PianoKeyboard = ({
       {blackKeys.map((note) => {
         const left = blackKeyLeft(note);
         if (left < 0) return null;
+        const stateClass = getKeyStateClass(note);
         return (
           <button
             key={note.keyLabel}
             disabled={disabled}
             onClick={() => onSelect(note.keyLabel)}
-            style={{
-              position: "absolute",
-              left,
-              top: 0,
-              width: blackWidth,
-              height: blackHeight,
-              background: getKeyColor(note, false),
-              border: "1px solid #000",
-              borderRadius: "0 0 4px 4px",
-              cursor: disabled ? "default" : "pointer",
-              zIndex: 2,
-              display: "flex",
-              alignItems: "flex-end",
-              justifyContent: "center",
-              paddingBottom: 2,
-              fontSize: 8,
-              fontWeight: 600,
-              color:
-                getKeyColor(note, false) === "#52c41a"
-                  ? "#fff"
-                  : getKeyColor(note, false) === "#ff4d4f"
-                    ? "#fff"
-                    : "#ccc",
-              transition: "background 0.15s",
-            }}
+            className={cx(
+              styles.blackKey,
+              stateClass,
+              stateClass && styles.blackKeyHighlighted,
+            )}
+            style={{ left }}
           >
             {note.name}
           </button>
         );
       })}
-    </div>
+    </Flex>
   );
 };
 

@@ -9,6 +9,7 @@ import {
 } from "vexflow";
 import type { Feedback, Question } from "../types";
 import { FEEDBACK_OPTIONS } from "./GameScreen";
+import { styles } from "./NoteStaff.styles";
 
 interface Props {
   question: Question;
@@ -72,17 +73,7 @@ const NoteStaff = ({ question, feedback }: Props) => {
     voice.draw(context, stave);
   }, [question, feedback]);
 
-  return (
-    <div
-      ref={containerRef}
-      style={{
-        width: "100%",
-        background: "#fff",
-        borderRadius: 12,
-        padding: "8px 0",
-      }}
-    />
-  );
+  return <div ref={containerRef} className={styles.staff} />;
 };
 
 export default NoteStaff;
