@@ -1,6 +1,7 @@
-import { Button, Card, Progress, Space, Typography } from "antd";
+import { Button, Card, Flex, Progress, Space, Typography } from "antd";
 import type { Answer, Clef, Level } from "../types";
 import { TOTAL_QUESTIONS } from "../gameLogic";
+import { styles } from "./ResultsScreen.styles";
 
 const { Title, Text } = Typography;
 
@@ -39,28 +40,18 @@ const ResultsScreen = ({ answers, level, clef, onRestart }: Props) => {
     .slice(0, 3);
 
   return (
-    <div
-      style={{
-        height: "100dvh",
-        display: "flex",
-        flexDirection: "column",
-        alignItems: "center",
-        justifyContent: "center",
-        padding: 24,
-        background: "linear-gradient(135deg, #e6f4ff 0%, #f0f5ff 100%)",
-      }}
-    >
-      <Card style={{ width: "100%", maxWidth: 400, borderRadius: 16 }}>
-        <Space
-          direction="vertical"
-          size="large"
-          style={{ width: "100%", textAlign: "center" }}
-        >
+    <Flex vertical align="center" justify="center" className={styles.screen}>
+      <Card className={styles.card}>
+        <Space direction="vertical" size="large" className={styles.content}>
           <div>
-            <Title level={2} style={{ margin: 0, color: grade.color }}>
+            <Title
+              level={2}
+              className={styles.title}
+              style={{ color: grade.color }}
+            >
               {grade.label}
             </Title>
-            <Text type="secondary" style={{ textTransform: "capitalize" }}>
+            <Text type="secondary" className={styles.subtitle}>
               {clef} clef — {level}
             </Text>
           </div>
@@ -76,42 +67,24 @@ const ResultsScreen = ({ answers, level, clef, onRestart }: Props) => {
           </div>
 
           {missedSorted.length > 0 && (
-            <div style={{ textAlign: "left" }}>
+            <div className={styles.section}>
               <Text strong>Notes to review:</Text>
-              <div
-                style={{
-                  marginTop: 8,
-                  display: "flex",
-                  flexWrap: "wrap",
-                  gap: 8,
-                }}
-              >
+              <Flex wrap gap={8} className={styles.missedList}>
                 {missedSorted.map(([name, count]) => (
-                  <span
-                    key={name}
-                    style={{
-                      background: "#fff2f0",
-                      border: "1px solid #ffccc7",
-                      borderRadius: 8,
-                      padding: "4px 12px",
-                      fontSize: 14,
-                      fontWeight: 600,
-                      color: "#cf1322",
-                    }}
-                  >
+                  <span key={name} className={styles.missedTag}>
                     {name} ×{count}
                   </span>
                 ))}
-              </div>
+              </Flex>
             </div>
           )}
 
-          <Space style={{ width: "100%" }} direction="vertical">
+          <Space direction="vertical" className={styles.actions}>
             <Button
               type="primary"
               size="large"
               block
-              style={{ height: 52, fontSize: 17, borderRadius: 12 }}
+              className={styles.restartButton}
               onClick={onRestart}
             >
               Play Again
@@ -119,7 +92,7 @@ const ResultsScreen = ({ answers, level, clef, onRestart }: Props) => {
           </Space>
         </Space>
       </Card>
-    </div>
+    </Flex>
   );
 };
 

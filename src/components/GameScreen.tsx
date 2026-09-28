@@ -1,9 +1,11 @@
 import { useState, useCallback } from "react";
-import { Button, Progress, Typography } from "antd";
+import { Button, Flex, Progress, Typography } from "antd";
+import { cx } from "@linaria/core";
 import NoteStaff from "./NoteStaff";
 import PianoKeyboard from "./PianoKeyboard";
 import type { Answer, Clef, Feedback, Level, Question } from "../types";
 import { getKeyboardNotes, TOTAL_QUESTIONS } from "../gameLogic";
+import { styles } from "./GameScreen.styles";
 
 const { Text } = Typography;
 
@@ -62,86 +64,44 @@ const GameScreen = ({ level, clef, questions, onFinish }: Props) => {
   const progressPercent = Math.round((index / TOTAL_QUESTIONS) * 100);
 
   return (
-    <div
-      style={{
-        height: "100dvh",
-        display: "flex",
-        flexDirection: "column",
-        padding: "12px 16px",
-        gap: 12,
-        background: "#f5f5f5",
-      }}
-    >
+    <Flex vertical gap={12} className={styles.screen}>
       {/* Header */}
-      <div
-        style={{
-          display: "flex",
-          margin: "0 auto",
-          alignItems: "center",
-          gap: 12,
-          width: "50%",
-        }}
-      >
-        <Text type="secondary" style={{ whiteSpace: "nowrap", fontSize: 13 }}>
+      <Flex align="center" gap={12} className={styles.header}>
+        <Text type="secondary" className={styles.meta}>
           {index + 1} / {TOTAL_QUESTIONS}
         </Text>
         <Progress
           percent={progressPercent}
           showInfo={false}
-          style={{ flex: 1, margin: 0 }}
+          className={styles.progress}
         />
-        <Text
-          type="secondary"
-          style={{
-            whiteSpace: "nowrap",
-            fontSize: 13,
-            textTransform: "capitalize",
-          }}
-        >
+        <Text type="secondary" className={cx(styles.meta, styles.capitalize)}>
           {level}
         </Text>
-      </div>
+      </Flex>
 
       {/* Staff */}
-      <div
-        style={{
-          flex: 1,
-          display: "flex",
-          flexDirection: "column",
-          justifyContent: "center",
-          gap: 8,
-        }}
-      >
+      <Flex vertical justify="center" gap={8} flex={1}>
         <NoteStaff question={current} feedback={feedback} />
 
         {feedback !== FEEDBACK_OPTIONS.NONE && (
           <div
-            style={{
-              textAlign: "center",
-              fontSize: 16,
-              fontWeight: 600,
-              color: feedback === "correct" ? "#52c41a" : "#ff4d4f",
-            }}
+            className={cx(
+              styles.feedback,
+              feedback === FEEDBACK_OPTIONS.CORRECT
+                ? styles.correct
+                : styles.incorrect,
+            )}
           >
             {feedback === FEEDBACK_OPTIONS.CORRECT
               ? "Correct!"
               : `Incorrect — it was ${current.note.name}`}
           </div>
         )}
-      </div>
+      </Flex>
 
       {/* Keyboard */}
-      <div
-        style={{
-          background: "#fff",
-          borderRadius: 16,
-          padding: "16px 8px 12px",
-          boxShadow: "0 2px 12px rgba(0,0,0,0.08)",
-          overflowX: "auto",
-          display: "flex",
-          justifyContent: "center",
-        }}
-      >
+      <Flex justify="center" className={styles.keyboardPanel}>
         <PianoKeyboard
           notes={keyboardNotes}
           onSelect={handleSelect}
@@ -151,7 +111,7 @@ const GameScreen = ({ level, clef, questions, onFinish }: Props) => {
             feedback !== FEEDBACK_OPTIONS.NONE ? current.note.keyLabel : null
           }
         />
-      </div>
+      </Flex>
 
       {/* Next button */}
       <Button
@@ -160,11 +120,11 @@ const GameScreen = ({ level, clef, questions, onFinish }: Props) => {
         block
         disabled={feedback === FEEDBACK_OPTIONS.NONE}
         onClick={handleNext}
-        style={{ height: 52, fontSize: 17, borderRadius: 12 }}
+        className={styles.nextButton}
       >
         {index + 1 >= TOTAL_QUESTIONS ? "See Results" : "Next"}
       </Button>
-    </div>
+    </Flex>
   );
 };
 

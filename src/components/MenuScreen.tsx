@@ -1,6 +1,7 @@
 import { useState } from "react";
-import { Button, Card, Radio, Space, Typography } from "antd";
+import { Button, Card, Flex, Radio, Space, Typography } from "antd";
 import type { Clef, Level } from "../types";
+import { styles } from "./MenuScreen.styles";
 
 const { Title, Text } = Typography;
 const CLEF_OPTIONS: Record<string, Clef> = {
@@ -23,79 +24,60 @@ const MenuScreen = ({ onStart }: Props) => {
   const [clef, setClef] = useState<Clef>(CLEF_OPTIONS.TREBLE);
 
   return (
-    <div
-      style={{
-        height: "100dvh",
-        display: "flex",
-        flexDirection: "column",
-        alignItems: "center",
-        justifyContent: "center",
-        padding: 24,
-        background: "linear-gradient(135deg, #e6f4ff 0%, #f0f5ff 100%)",
-      }}
-    >
-      <Card style={{ width: "100%", maxWidth: 400, borderRadius: 16 }}>
-        <Space
-          direction="vertical"
-          size="large"
-          style={{ width: "100%", textAlign: "center" }}
-        >
+    <Flex vertical align="center" justify="center" className={styles.screen}>
+      <Card className={styles.card}>
+        <Space direction="vertical" size="large" className={styles.content}>
           <div>
-            <Title level={2} style={{ margin: 0 }}>
+            <Title level={2} className={styles.title}>
               Note Reader
             </Title>
             <Text type="secondary">Sight-reading practice</Text>
           </div>
 
-          <div style={{ textAlign: "left" }}>
+          <div className={styles.section}>
             <Text strong>Clef</Text>
             <Radio.Group
               value={clef}
               onChange={(e) => setClef(e.target.value as Clef)}
-              style={{ display: "flex", gap: 12, marginTop: 8 }}
+              className={styles.clefGroup}
             >
               <Radio.Button
                 value={CLEF_OPTIONS.TREBLE}
-                style={{ flex: 1, textAlign: "center" }}
+                className={styles.clefOption}
               >
                 Treble (G)
               </Radio.Button>
               <Radio.Button
                 value={CLEF_OPTIONS.BASS}
-                style={{ flex: 1, textAlign: "center" }}
+                className={styles.clefOption}
               >
                 Bass (F)
               </Radio.Button>
             </Radio.Group>
           </div>
 
-          <div style={{ textAlign: "left" }}>
+          <div className={styles.section}>
             <Text strong>Level</Text>
             <Radio.Group
               value={level}
               onChange={(e) => setLevel(e.target.value as Level)}
-              style={{
-                display: "flex",
-                flexDirection: "column",
-                gap: 8,
-                marginTop: 8,
-              }}
+              className={styles.levelGroup}
             >
               <Radio.Button
                 value={LEVEL_OPTIONS.BEGINNER}
-                style={{ textAlign: "center" }}
+                className={styles.levelOption}
               >
                 Beginner — Staff notes only
               </Radio.Button>
               <Radio.Button
                 value={LEVEL_OPTIONS.INTERMEDIATE}
-                style={{ textAlign: "center" }}
+                className={styles.levelOption}
               >
                 Intermediate — + Ledger lines
               </Radio.Button>
               <Radio.Button
                 value={LEVEL_OPTIONS.ADVANCED}
-                style={{ textAlign: "center" }}
+                className={styles.levelOption}
               >
                 Advanced — + Accidentals
               </Radio.Button>
@@ -106,14 +88,14 @@ const MenuScreen = ({ onStart }: Props) => {
             type="primary"
             size="large"
             block
-            style={{ height: 52, fontSize: 18, borderRadius: 12 }}
+            className={styles.startButton}
             onClick={() => onStart(level, clef)}
           >
             Start (20 questions)
           </Button>
         </Space>
       </Card>
-    </div>
+    </Flex>
   );
 };
 
