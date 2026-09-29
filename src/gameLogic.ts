@@ -1,3 +1,4 @@
+import { CLEF_TYPE } from "./constants";
 import type { Clef, Level, NoteDefinition, Question } from "./types";
 
 const TREBLE_NOTES: NoteDefinition[] = [
@@ -11,12 +12,12 @@ const TREBLE_NOTES: NoteDefinition[] = [
   { name: "D", keyLabel: "D5", octave: 5 },
   { name: "E", keyLabel: "E5", octave: 5 },
   { name: "F", keyLabel: "F5", octave: 5 },
-  // Intermediate adds ledger lines
+  // Intermediate ---- adds ledger lines
   { name: "D", keyLabel: "D4", octave: 4 },
   { name: "C", keyLabel: "C4", octave: 4 },
   { name: "G", keyLabel: "G5", octave: 5 },
   { name: "A", keyLabel: "A5", octave: 5 },
-  // Advanced: full chromatic (all accidentals in C4–A5 range)
+  // Advanced ---- full chromatic (all accidentals in C4–A5 range)
   { name: "F", keyLabel: "F3", octave: 3 },
   { name: "F#", keyLabel: "F#3", octave: 3 },
   { name: "G", keyLabel: "G3", octave: 3 },
@@ -58,9 +59,7 @@ const BASS_NOTES: NoteDefinition[] = [
   { name: "E", keyLabel: "E2", octave: 2 },
   { name: "B", keyLabel: "B3", octave: 3 },
   { name: "C", keyLabel: "C4", octave: 4 },
-  // Advanced: full chromatic (B1–F4)
-  // — extension below E2
-  // { name: 'Bb', keyLabel: 'Bb1', octave: 1 },
+  // Advanced
   { name: "B", keyLabel: "B1", octave: 1 },
   { name: "C", keyLabel: "C2", octave: 2 },
   { name: "C#", keyLabel: "C#2", octave: 2 },
@@ -86,7 +85,7 @@ const BASS_NOTES: NoteDefinition[] = [
 const LEVEL_NOTE_COUNT: Record<Level, number> = {
   beginner: 9,
   intermediate: 13,
-  advanced: 100, // use all notes (full chromatic)
+  advanced: 100,
 };
 
 export const TOTAL_QUESTIONS = 20;
@@ -94,21 +93,20 @@ export const TOTAL_QUESTIONS = 20;
 const pickNotes = (all: NoteDefinition[], count: number): NoteDefinition[] =>
   all.slice(0, count);
 
-const shuffle = <T>(items: T[]): T[] => {
-  const shuffledItems = [...items];
-  for (let index = shuffledItems.length - 1; index > 0; index--) {
+const shuffle = (availableNotes: NoteDefinition[]): NoteDefinition[] => {
+  const shuffledNotes = [...availableNotes];
+  for (let index = shuffledNotes.length - 1; index > 0; index--) {
     const randomIndex = Math.floor(Math.random() * (index + 1));
-    [shuffledItems[index], shuffledItems[randomIndex]] = [
-      shuffledItems[randomIndex],
-      shuffledItems[index],
-    ];
+    const temporary = shuffledNotes[index];
+    shuffledNotes[index] = shuffledNotes[randomIndex];
+    shuffledNotes[randomIndex] = temporary;
   }
-  return shuffledItems;
+  return shuffledNotes;
 };
 
 export const generateQuestions = (level: Level, clef: Clef): Question[] => {
-  const pool = clef === "treble" ? TREBLE_NOTES : BASS_NOTES;
-  const notes = pickNotes(pool, LEVEL_NOTE_COUNT[level]);
+  const availableRange = clef === CLEF_TYPE.TREBLE ? TREBLE_NOTES : BASS_NOTES;
+  const notes = pickNotes(availableRange, LEVEL_NOTE_COUNT[level]);
   // Ensure each note appears at least once, then fill up to TOTAL_QUESTIONS
   const base = shuffle(notes).slice(0, TOTAL_QUESTIONS);
   const extra = Array.from(
@@ -124,6 +122,6 @@ export const getKeyboardNotes = (
   level: Level,
   clef: Clef,
 ): NoteDefinition[] => {
-  const pool = clef === "treble" ? TREBLE_NOTES : BASS_NOTES;
-  return pickNotes(pool, LEVEL_NOTE_COUNT[level]);
+  const availableRange = clef === CLEF_TYPE.TREBLE ? TREBLE_NOTES : BASS_NOTES;
+  return pickNotes(availableRange, LEVEL_NOTE_COUNT[level]);
 };

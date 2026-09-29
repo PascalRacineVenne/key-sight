@@ -14,11 +14,12 @@ interface Props {
 }
 
 const getGrade = (score: number): { label: string; color: string } => {
-  const pct = (score / TOTAL_QUESTIONS) * 100;
-  if (pct === 100) return { label: "Perfect!", color: "#722ed1" };
-  if (pct >= 85) return { label: "Excellent", color: FEEDBACK_COLORS.correct };
-  if (pct >= 70) return { label: "Good", color: "#1677ff" };
-  if (pct >= 50) return { label: "Keep practicing", color: "#fa8c16" };
+  const percentage = (score / TOTAL_QUESTIONS) * 100;
+  if (percentage === 100) return { label: "Perfect!", color: "#722ed1" };
+  if (percentage >= 85)
+    return { label: "Excellent", color: FEEDBACK_COLORS.correct };
+  if (percentage >= 70) return { label: "Good", color: "#1677ff" };
+  if (percentage >= 50) return { label: "Keep practicing", color: "#fa8c16" };
   return { label: "Keep going!", color: FEEDBACK_COLORS.incorrect };
 };
 
@@ -27,7 +28,6 @@ const ResultsScreen = ({ answers, level, clef, onRestart }: Props) => {
   const percent = Math.round((score / TOTAL_QUESTIONS) * 100);
   const grade = getGrade(score);
 
-  // Find most missed notes
   const missed = answers
     .filter((answer) => !answer.correct)
     .reduce<Record<string, number>>((missedCounts, answer) => {

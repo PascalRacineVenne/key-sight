@@ -1,7 +1,9 @@
 import { useState } from "react";
 import { Button, Card, Flex, Radio, Space, Typography } from "antd";
+import { VexFlow } from "vexflow";
 import type { Clef, Level } from "../types";
 import { styles } from "./MenuScreen.styles";
+import { cx } from "@linaria/core";
 
 const { Title, Text } = Typography;
 const CLEF_OPTIONS: Record<string, Clef> = {
@@ -45,13 +47,25 @@ const MenuScreen = ({ onStart }: Props) => {
                 value={CLEF_OPTIONS.TREBLE}
                 className={styles.clefOption}
               >
-                Treble (G)
+                <span
+                  role="img"
+                  aria-label="Treble clef"
+                  className={cx(styles.clef, styles.trebleClefTransform)}
+                >
+                  {VexFlow.Glyphs.gClef}
+                </span>
               </Radio.Button>
               <Radio.Button
                 value={CLEF_OPTIONS.BASS}
                 className={styles.clefOption}
               >
-                Bass (F)
+                <span
+                  role="img"
+                  aria-label="Bass clef"
+                  className={cx(styles.clef, styles.bassClefTransform)}
+                >
+                  {VexFlow.Glyphs.fClef}
+                </span>
               </Radio.Button>
             </Radio.Group>
           </div>
