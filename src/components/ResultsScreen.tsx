@@ -1,10 +1,9 @@
-import { Button, Card, Flex, Progress, Space, Typography } from "antd";
+import { Button, Flex, Progress } from "antd";
 import type { Answer, Clef, Level } from "../types";
 import { TOTAL_QUESTIONS } from "../gameLogic";
-import { FEEDBACK_COLORS } from "../constants";
+import { COLORS } from "../theme";
+import { sharedStyles } from "../sharedStyles";
 import { styles } from "./ResultsScreen.styles";
-
-const { Title, Text } = Typography;
 
 interface Props {
   answers: Answer[];
@@ -13,14 +12,15 @@ interface Props {
   onRestart: () => void;
 }
 
+// The color goes on the score ring; the title stays charcoal for legibility
 const getGrade = (score: number): { label: string; color: string } => {
   const percentage = (score / TOTAL_QUESTIONS) * 100;
-  if (percentage === 100) return { label: "Perfect!", color: "#722ed1" };
-  if (percentage >= 85)
-    return { label: "Excellent", color: FEEDBACK_COLORS.correct };
-  if (percentage >= 70) return { label: "Good", color: "#1677ff" };
-  if (percentage >= 50) return { label: "Keep practicing", color: "#fa8c16" };
-  return { label: "Keep going!", color: FEEDBACK_COLORS.incorrect };
+  if (percentage === 100) return { label: "Perfect!", color: COLORS.success };
+  if (percentage >= 85) return { label: "Excellent", color: COLORS.success };
+  if (percentage >= 70) return { label: "Good", color: COLORS.primary };
+  if (percentage >= 50)
+    return { label: "Keep practicing", color: COLORS.accent };
+  return { label: "Keep going!", color: COLORS.accent };
 };
 
 const ResultsScreen = ({ answers, level, clef, onRestart }: Props) => {
@@ -41,58 +41,54 @@ const ResultsScreen = ({ answers, level, clef, onRestart }: Props) => {
     .slice(0, 3);
 
   return (
-    <Flex vertical align="center" justify="center" className={styles.screen}>
-      <Card className={styles.card}>
-        <Space direction="vertical" size="large" className={styles.content}>
-          <div>
-            <Title
-              level={2}
-              className={styles.title}
-              style={{ color: grade.color }}
-            >
-              {grade.label}
-            </Title>
-            <Text type="secondary" className={styles.subtitle}>
-              {clef} clef — {level}
-            </Text>
-          </div>
+    <Flex
+      vertical
+      align="center"
+      justify="center"
+      className={sharedStyles.centeredScreen}
+    >
+      <main className={sharedStyles.card}>
+        <header className={styles.header}>
+          <h1 className={styles.title}>{grade.label}</h1>
+          <p className={styles.subtitle}>
+            {level} · {clef} clef
+          </p>
+        </header>
 
-          <div>
-            <Progress
-              type="circle"
-              percent={percent}
-              strokeColor={grade.color}
-              format={() => `${score}/${TOTAL_QUESTIONS}`}
-              size={120}
-            />
-          </div>
+        <Flex justify="center">
+          <Progress
+            type="circle"
+            percent={percent}
+            strokeColor={grade.color}
+            format={() => `${score}/${TOTAL_QUESTIONS}`}
+            size={128}
+            className={styles.score}
+          />
+        </Flex>
 
-          {missedSorted.length > 0 && (
-            <div className={styles.section}>
-              <Text strong>Notes to review:</Text>
-              <Flex wrap gap={8} className={styles.missedList}>
-                {missedSorted.map(([name, count]) => (
-                  <span key={name} className={styles.missedTag}>
-                    {name} ×{count}
-                  </span>
-                ))}
-              </Flex>
-            </div>
-          )}
+        {missedSorted.length > 0 && (
+          <section>
+            <h2 className={styles.sectionTitle}>Notes to review</h2>
+            <Flex wrap gap={8}>
+              {missedSorted.map(([name, count]) => (
+                <span key={name} className={styles.missedTag}>
+                  {name} ×{count}
+                </span>
+              ))}
+            </Flex>
+          </section>
+        )}
 
-          <Space direction="vertical" className={styles.actions}>
-            <Button
-              type="primary"
-              size="large"
-              block
-              className={styles.restartButton}
-              onClick={onRestart}
-            >
-              Play Again
-            </Button>
-          </Space>
-        </Space>
-      </Card>
+        <Button
+          type="primary"
+          size="large"
+          block
+          className={sharedStyles.primaryButton}
+          onClick={onRestart}
+        >
+          Play Again
+        </Button>
+      </main>
     </Flex>
   );
 };

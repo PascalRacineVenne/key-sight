@@ -1,76 +1,93 @@
 import { css } from "@linaria/core";
+import { COLORS, RADIUS } from "../theme";
 
 export const styles = {
-  screen: css`
-    height: 100dvh;
-    padding: 24px;
-    background: linear-gradient(135deg, #e6f4ff 0%, #f0f5ff 100%);
-  `,
-
-  card: css`
-    width: 100%;
-    max-width: 400px;
-    border-radius: 16px;
-  `,
-
-  content: css`
-    width: 100%;
+  header: css`
     text-align: center;
   `,
 
-  title: css`
-    && {
-      margin: 0;
-    }
+  // The wordmark carries the brand for now: "Sight" in the primary blue
+  wordmark: css`
+    font-size: 36px;
+    font-weight: 700;
+    letter-spacing: -0.03em;
+    line-height: 1.1;
+    color: ${COLORS.text};
   `,
 
-  section: css`
-    text-align: left;
+  wordmarkSight: css`
+    color: ${COLORS.primary};
   `,
 
-  clefGroup: css`
-    display: flex;
-    gap: 12px;
-    margin-top: 8px;
+  subtitle: css`
+    margin-top: 6px;
+    font-size: 15px;
+    color: ${COLORS.textSecondary};
+  `,
+
+  clefOptions: css`
+    grid-template-columns: 1fr 1fr;
   `,
 
   clefOption: css`
-    flex: 1;
-    text-align: center;
-    height: 72px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
+    height: 104px;
   `,
 
+  // Clef symbols from VexFlow's Bravura music font. Unselected they're
+  // charcoal; selected they inherit the blue from the option.
   clef: css`
-    font-family: Bravura;
-    font-size: 32px;
-    line-height: 1;
     display: block;
+    font-family: Bravura;
+    font-size: 44px;
+    line-height: 1;
   `,
-  trebleClefTransform: css`
+
+  // The glyphs sit at different heights around the baseline, so each is
+  // nudged to look vertically centered
+  trebleClef: css`
     transform: translateY(0.19em);
   `,
 
-  bassClefTransform: css`
+  bassClef: css`
     transform: translateY(-0.19em);
   `,
 
-  levelGroup: css`
-    display: flex;
-    flex-direction: column;
+  levelOptions: css`
+    grid-template-columns: repeat(3, 1fr);
     gap: 8px;
-    margin-top: 8px;
+
+    @media (max-width: 480px) {
+      grid-template-columns: 1fr;
+    }
   `,
 
   levelOption: css`
+    gap: 2px;
+    min-height: 64px;
+    padding: 10px 8px;
+    border-radius: ${RADIUS.control}px;
     text-align: center;
+
+    /* On phones the options stack: name left, description right */
+    @media (max-width: 480px) {
+      flex-direction: row;
+      justify-content: space-between;
+      min-height: 52px;
+      padding: 0 16px;
+    }
   `,
 
-  startButton: css`
-    height: 52px;
-    font-size: 18px;
-    border-radius: 12px;
+  levelName: css`
+    font-size: 14px;
+    font-weight: 600;
+  `,
+
+  levelDescription: css`
+    font-size: 12px;
+    color: ${COLORS.textSecondary};
+
+    label:has(:checked) & {
+      color: ${COLORS.primary};
+    }
   `,
 };

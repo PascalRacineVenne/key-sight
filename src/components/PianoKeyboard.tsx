@@ -64,11 +64,10 @@ const PianoKeyboard = ({
     onSelect(note.keyLabel);
   };
 
-  const getKeyStateClass = (note: NoteDefinition) => {
-    if (note.keyLabel === correctKey && selectedKey !== null)
-      return styles.correct;
+  const getKeyState = (note: NoteDefinition) => {
+    if (note.keyLabel === correctKey && selectedKey !== null) return "correct";
     if (note.keyLabel === selectedKey && note.keyLabel !== correctKey)
-      return styles.incorrect;
+      return "incorrect";
     return null;
   };
 
@@ -114,7 +113,11 @@ const PianoKeyboard = ({
           aria-label={note.keyLabel}
           disabled={disabled}
           onClick={() => handlePress(note)}
-          className={cx(styles.whiteKey, getKeyStateClass(note))}
+          className={cx(
+            styles.whiteKey,
+            getKeyState(note) === "correct" && styles.correct,
+            getKeyState(note) === "incorrect" && styles.incorrect,
+          )}
         >
           {note.keyLabel}
           {note.keyLabel === "C4" && <span className={styles.middleC} />}
@@ -125,7 +128,7 @@ const PianoKeyboard = ({
       {blackKeys.map((note) => {
         const left = blackKeyLeft(note);
         if (left === null) return null;
-        const stateClass = getKeyStateClass(note);
+        const keyState = getKeyState(note);
         return (
           <button
             key={note.keyLabel}
@@ -134,8 +137,8 @@ const PianoKeyboard = ({
             onClick={() => handlePress(note)}
             className={cx(
               styles.blackKey,
-              stateClass,
-              stateClass && styles.blackKeyHighlighted,
+              keyState === "correct" && styles.blackCorrect,
+              keyState === "incorrect" && styles.blackIncorrect,
             )}
             style={{ left }}
           >

@@ -1,58 +1,47 @@
 import { css } from "@linaria/core";
+import { COLORS, RADIUS } from "../theme";
 
 export const styles = {
-  screen: css`
-    height: 100dvh;
-    padding: 24px;
-    background: linear-gradient(135deg, #e6f4ff 0%, #f0f5ff 100%);
-  `,
-
-  card: css`
-    width: 100%;
-    max-width: 400px;
-    border-radius: 16px;
-  `,
-
-  content: css`
-    width: 100%;
+  header: css`
     text-align: center;
   `,
 
   title: css`
-    && {
-      margin: 0;
-    }
+    font-size: 30px;
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    color: ${COLORS.text};
   `,
 
   subtitle: css`
+    margin-top: 6px;
+    font-size: 14px;
+    color: ${COLORS.textSecondary};
     text-transform: capitalize;
   `,
 
-  section: css`
-    text-align: left;
+  score: css`
+    & .ant-progress-text {
+      font-size: 24px;
+      font-weight: 600;
+      color: ${COLORS.text};
+      font-variant-numeric: tabular-nums;
+    }
   `,
 
-  missedList: css`
-    margin-top: 8px;
+  sectionTitle: css`
+    margin-bottom: 10px;
+    font-size: 14px;
+    font-weight: 600;
+    color: ${COLORS.text};
   `,
 
   missedTag: css`
-    background: #fff2f0;
-    border: 1px solid #ffccc7;
-    border-radius: 8px;
     padding: 4px 12px;
+    border-radius: ${RADIUS.small}px;
+    background: ${COLORS.accentTint};
     font-size: 14px;
     font-weight: 600;
-    color: #cf1322;
-  `,
-
-  actions: css`
-    width: 100%;
-  `,
-
-  restartButton: css`
-    height: 52px;
-    font-size: 17px;
-    border-radius: 12px;
+    color: ${COLORS.accentText};
   `,
 };

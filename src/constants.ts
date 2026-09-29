@@ -1,8 +1,17 @@
 import type { Clef, Feedback } from "./types";
+import { COLORS } from "./theme";
 
+// Correct is a restrained green; wrong answers use the warm accent so a
+// mistake reads as "not quite" rather than an alarm.
 export const FEEDBACK_COLORS: Record<Exclude<Feedback, "none">, string> = {
-  correct: "#52c41a",
-  incorrect: "#ff4d4f",
+  correct: COLORS.success,
+  incorrect: COLORS.accent,
+};
+
+// Darker shades of the feedback colors, for text on white
+export const FEEDBACK_TEXT_COLORS: Record<Exclude<Feedback, "none">, string> = {
+  correct: COLORS.successText,
+  incorrect: COLORS.accentText,
 };
 
 export const CLEF_TYPE = {
@@ -25,10 +34,13 @@ export const NEXT_QUESTION_DELAY_MS = {
 // one note, and tall enough for three ledger lines above and below.
 // The SVG is scaled up from this size, so smaller means more zoomed in.
 //
-// Ratio: keep width:height at about 1:1 to 1.1:1 (currently 140:130 ≈ 1.08).
-// - height: keep at 130. The note centers span 100 units (E6 to F3 in
-//   treble), plus the staff's y offset and the note head. Less clips notes.
-// - width: at least ~120 so the clef, an accidental and the note don't
-//   collide. A wider staff means less zoom: its on-screen height is fixed
-//   at 40% of the screen, and the width follows from this ratio.
-export const STAFF_SIZE = { width: 140, height: 130 };
+// Measured in Chrome, the notes' ink spans from 7.8 units above the stave's
+// y position (the flat on Eb6) to 123.8 below it (the sharp on F#3).
+// STAFF_OFFSET_Y and the height fit that range with 2 units to spare at
+// each end; lowering either clips those notes.
+//
+// Width: at least ~120 so the clef, an accidental and the note don't
+// collide. A wider staff means less zoom: its on-screen height is fixed
+// by the screen height, and the width follows from width:height.
+export const STAFF_SIZE = { width: 140, height: 136 };
+export const STAFF_OFFSET_Y = 10;
