@@ -1,5 +1,5 @@
 import { useState, useCallback, useEffect } from "react";
-import { Flex, Progress, Slider, Switch, Typography } from "antd";
+import { Flex, Progress, Slider, Switch } from "antd";
 import { cx } from "@linaria/core";
 import NoteStaff from "./NoteStaff";
 import PianoKeyboard from "./PianoKeyboard";
@@ -8,8 +8,6 @@ import { getKeyboardNotes, TOTAL_QUESTIONS } from "../gameLogic";
 import { NEXT_QUESTION_DELAY_MS } from "../constants";
 import { playNote } from "../audio";
 import { styles } from "./GameScreen.styles";
-
-const { Text } = Typography;
 
 const formatSeconds = (ms: number) => `${(ms / 1000).toFixed(2)} s`;
 
@@ -97,65 +95,56 @@ const GameScreen = ({ level, clef, questions, onFinish }: GameScreenProps) => {
   const progressPercent = Math.round(((index + 1) / TOTAL_QUESTIONS) * 100);
 
   return (
-    <Flex vertical gap={10} className={styles.screen}>
-      {/* Header */}
-      <Flex align="center" gap={12} className={styles.header}>
-        <Text type="secondary" className={styles.meta}>
+    <div className={styles.screen}>
+      {/* Progress and exercise context */}
+      <header className={styles.topBar}>
+        <span className={styles.count}>
           {index + 1} / {TOTAL_QUESTIONS}
-        </Text>
+        </span>
         <Progress
           percent={progressPercent}
           showInfo={false}
+          size={{ height: 4 }}
           className={styles.progress}
           aria-label={`Question ${index + 1} of ${TOTAL_QUESTIONS}`}
         />
-        <Text type="secondary" className={cx(styles.meta, styles.capitalize)}>
+        <span className={styles.badge}>
           {level} · {clef} clef
-        </Text>
-      </Flex>
+        </span>
+      </header>
 
-      {/* Staff */}
-      <Flex
-        vertical
-        justify="center"
-        gap={10}
-        flex={1}
-        className={styles.playArea}
-      >
-        <Flex align="center" className={styles.practiceControls}>
-          <Flex align="center" gap={12} className={styles.delayControl}>
-            <Text type="secondary" className={styles.meta}>
-              Next note
-            </Text>
-            <Slider
-              min={NEXT_QUESTION_DELAY_MS.min}
-              max={NEXT_QUESTION_DELAY_MS.max}
-              step={NEXT_QUESTION_DELAY_MS.step}
-              value={nextDelayMs}
-              onChange={setNextDelayMs}
-              tooltip={{ formatter: (ms) => formatSeconds(ms ?? 0) }}
-              aria-label="Delay before next note"
-              className={styles.delaySlider}
-            />
-            <Text
-              type="secondary"
-              className={cx(styles.meta, styles.delayValue)}
-            >
-              {formatSeconds(nextDelayMs)}
-            </Text>
-          </Flex>
-          <Flex align="center" gap={8} className={styles.audioControl}>
-            <Text type="secondary" className={styles.meta}>
-              Play note first
-            </Text>
-            <Switch
-              checked={playNoteFirst}
-              onChange={setPlayNoteFirst}
-              aria-label="Play each note before answering"
-            />
-          </Flex>
+      {/* Settings for the current exercise */}
+      <section aria-label="Practice settings" className={styles.controls}>
+        <Flex align="center" gap={10} className={styles.delayControl}>
+          <span className={styles.controlLabel}>Next note</span>
+          <Slider
+            min={NEXT_QUESTION_DELAY_MS.min}
+            max={NEXT_QUESTION_DELAY_MS.max}
+            step={NEXT_QUESTION_DELAY_MS.step}
+            value={nextDelayMs}
+            onChange={setNextDelayMs}
+            tooltip={{ formatter: (ms) => formatSeconds(ms ?? 0) }}
+            aria-label="Delay before next note"
+            className={styles.delaySlider}
+          />
+          <span className={cx(styles.controlLabel, styles.delayValue)}>
+            {formatSeconds(nextDelayMs)}
+          </span>
         </Flex>
+        <span aria-hidden className={styles.controlDivider} />
+        <Flex align="center" gap={10}>
+          <span className={styles.controlLabel}>Play note first</span>
+          <Switch
+            size="small"
+            checked={playNoteFirst}
+            onChange={setPlayNoteFirst}
+            aria-label="Play each note before answering"
+          />
+        </Flex>
+      </section>
 
+      {/* Notation: the focus of the screen */}
+      <div className={styles.notation}>
         <NoteStaff question={currentQuestion} feedback={feedback} />
 
         {/* Always rendered with a fixed height so showing the message
@@ -172,10 +161,10 @@ const GameScreen = ({ level, clef, questions, onFinish }: GameScreenProps) => {
           {feedback === FEEDBACK_OPTIONS.INCORRECT &&
             `Incorrect — it was ${currentQuestion.note.name}`}
         </div>
-      </Flex>
+      </div>
 
       {/* Keyboard */}
-      <Flex className={styles.keyboardPanel}>
+      <div className={styles.keyboardPanel}>
         <PianoKeyboard
           notes={keyboardNotes}
           onSelect={handleSelect}
@@ -187,8 +176,8 @@ const GameScreen = ({ level, clef, questions, onFinish }: GameScreenProps) => {
               : null
           }
         />
-      </Flex>
-    </Flex>
+      </div>
+    </div>
   );
 };
 

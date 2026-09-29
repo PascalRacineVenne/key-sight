@@ -1,9 +1,11 @@
 import { css } from "@linaria/core";
-import { FEEDBACK_COLORS } from "../constants";
+import { COLORS, TRANSITION } from "../theme";
 
-// Key sizes depend on the viewport, so the component sets them as
-// CSS variables on the keyboard: --key-width, --white-height,
-// --black-width, --black-height.
+// Key sizes are set by the component as CSS variables on the keyboard:
+// --key-width, --white-height, --black-width, --black-height.
+//
+// Feedback uses a light tint plus a colored bar along the bottom edge of
+// the key: clear at a glance without flooding the keyboard with color.
 export const styles = {
   keyboard: css`
     position: relative;
@@ -14,39 +16,46 @@ export const styles = {
   `,
 
   whiteKey: css`
-    width: var(--key-width);
-    height: var(--white-height);
-    background: #fff;
-    border: 1px solid #bbb;
-    border-radius: 0 0 6px 6px;
-    cursor: pointer;
     position: relative;
-    flex: 0 0 var(--key-width);
     z-index: 1;
+    flex: 0 0 var(--key-width);
     display: flex;
     align-items: flex-end;
     justify-content: center;
-    padding-bottom: 4px;
+    width: var(--key-width);
+    height: var(--white-height);
+    padding-bottom: 8px;
+    background: ${COLORS.surface};
+    border: 1px solid ${COLORS.border};
+    border-radius: 0 0 8px 8px;
+    font-family: inherit;
     font-size: 11px;
     font-weight: 600;
-    color: #555;
+    color: ${COLORS.textSecondary};
+    cursor: pointer;
     transition:
-      background 0.15s,
-      border-color 0.15s,
-      transform 0.1s;
+      background ${TRANSITION},
+      box-shadow ${TRANSITION},
+      color ${TRANSITION};
+
+    /* Neighbouring keys share one border line */
+    & + & {
+      border-left-width: 0;
+    }
 
     &:hover:not(:disabled) {
-      background: #eaf4ff;
-      border-color: #69aef0;
+      background: ${COLORS.primaryTint};
     }
 
     &:active:not(:disabled) {
-      transform: translateY(1px);
+      background: ${COLORS.primaryTint};
+      box-shadow: inset 0 -4px 0 ${COLORS.primary};
+      color: ${COLORS.primary};
     }
 
     &:focus-visible {
-      z-index: 3;
-      outline: 3px solid #1677ff;
+      z-index: 4;
+      outline: 2px solid ${COLORS.primary};
       outline-offset: 2px;
     }
 
@@ -58,35 +67,36 @@ export const styles = {
   blackKey: css`
     position: absolute;
     top: 0;
-    width: var(--black-width);
-    height: var(--black-height);
-    background: #222;
-    border: 1px solid #000;
-    border-radius: 0 0 4px 4px;
-    cursor: pointer;
-    z-index: 2;
+    z-index: 3;
     display: flex;
     align-items: flex-end;
     justify-content: center;
-    padding-bottom: 2px;
+    width: var(--black-width);
+    height: var(--black-height);
+    padding-bottom: 6px;
+    background: ${COLORS.keyBlack};
+    border: 1px solid ${COLORS.keyBlack};
+    border-radius: 0 0 6px 6px;
+    font-family: inherit;
     font-size: 9px;
     font-weight: 600;
-    color: #ccc;
+    color: #c9d0d4;
+    cursor: pointer;
     transition:
-      background 0.15s,
-      transform 0.1s;
+      background ${TRANSITION},
+      box-shadow ${TRANSITION};
 
     &:hover:not(:disabled) {
-      background: #46515a;
+      background: ${COLORS.keyBlackHover};
     }
 
     &:active:not(:disabled) {
-      transform: translateY(1px);
+      box-shadow: inset 0 -4px 0 ${COLORS.primary};
     }
 
     &:focus-visible {
-      z-index: 4;
-      outline: 3px solid #1677ff;
+      z-index: 5;
+      outline: 2px solid ${COLORS.primary};
       outline-offset: 2px;
     }
 
@@ -95,34 +105,68 @@ export const styles = {
     }
   `,
 
+  // The correct key gets one soft pulse: the most noticeable animation in
+  // the app, and still restrained
   correct: css`
     && {
-      background: ${FEEDBACK_COLORS.correct};
+      z-index: 2;
+      background: ${COLORS.successTint};
+      color: ${COLORS.successText};
+      box-shadow: inset 0 -4px 0 ${COLORS.success};
+      animation: correctPulse 500ms ease-out;
+    }
+
+    @keyframes correctPulse {
+      from {
+        box-shadow:
+          inset 0 -4px 0 ${COLORS.success},
+          0 0 0 0 rgba(101, 181, 138, 0.45);
+      }
+      to {
+        box-shadow:
+          inset 0 -4px 0 ${COLORS.success},
+          0 0 0 8px rgba(101, 181, 138, 0);
+      }
     }
   `,
 
   incorrect: css`
     && {
-      background: ${FEEDBACK_COLORS.incorrect};
+      z-index: 2;
+      background: ${COLORS.accentTint};
+      color: ${COLORS.accentText};
+      box-shadow: inset 0 -4px 0 ${COLORS.accent};
     }
   `,
 
-  // Light label text on a colored black key
-  blackKeyHighlighted: css`
-    && {
+  // Black keys are filled with the feedback color instead of tinted
+  blackCorrect: css`
+    &&& {
+      z-index: 3;
+      background: ${COLORS.success};
+      border-color: ${COLORS.success};
+      color: #fff;
+    }
+  `,
+
+  blackIncorrect: css`
+    &&& {
+      z-index: 3;
+      background: ${COLORS.accent};
+      border-color: ${COLORS.accent};
       color: #fff;
     }
   `,
 
   middleC: css`
     position: absolute;
-    bottom: 24px;
+    bottom: 28px;
     left: 50%;
-    transform: translateX(-50%);
-    width: 8px;
-    height: 8px;
+    width: 6px;
+    height: 6px;
     border-radius: 50%;
-    background: #1163c7;
+    background: ${COLORS.primary};
+    transform: translateX(-50%);
     pointer-events: none;
   `,
 };

@@ -1,15 +1,13 @@
 import { useState } from "react";
-import { Button, Card, Flex, Radio, Space, Typography } from "antd";
+import { Button, Flex } from "antd";
 import { VexFlow } from "vexflow";
-import type { Clef, Level } from "../types";
-import { styles } from "./MenuScreen.styles";
 import { cx } from "@linaria/core";
-
-const { Title, Text } = Typography;
-const CLEF_OPTIONS: Record<string, Clef> = {
-  TREBLE: "treble",
-  BASS: "bass",
-};
+import type { Clef, Level } from "../types";
+import { CLEF_TYPE } from "../constants";
+import { TOTAL_QUESTIONS } from "../gameLogic";
+import ChoiceGroup from "./ChoiceGroup";
+import { sharedStyles } from "../sharedStyles";
+import { styles } from "./MenuScreen.styles";
 
 const LEVEL_OPTIONS: Record<string, Level> = {
   BEGINNER: "beginner",
@@ -17,98 +15,106 @@ const LEVEL_OPTIONS: Record<string, Level> = {
   ADVANCED: "advanced",
 };
 
+const CLEF_CHOICES = [
+  {
+    value: CLEF_TYPE.TREBLE,
+    ariaLabel: "Treble clef",
+    content: (
+      <span aria-hidden className={cx(styles.clef, styles.trebleClef)}>
+        {VexFlow.Glyphs.gClef}
+      </span>
+    ),
+  },
+  {
+    value: CLEF_TYPE.BASS,
+    ariaLabel: "Bass clef",
+    content: (
+      <span aria-hidden className={cx(styles.clef, styles.bassClef)}>
+        {VexFlow.Glyphs.fClef}
+      </span>
+    ),
+  },
+];
+
+const LEVEL_CHOICES = [
+  {
+    value: LEVEL_OPTIONS.BEGINNER,
+    name: "Beginner",
+    description: "Staff notes only",
+  },
+  {
+    value: LEVEL_OPTIONS.INTERMEDIATE,
+    name: "Intermediate",
+    description: "+ Ledger lines",
+  },
+  {
+    value: LEVEL_OPTIONS.ADVANCED,
+    name: "Advanced",
+    description: "+ Accidentals",
+  },
+].map(({ value, name, description }) => ({
+  value,
+  content: (
+    <>
+      <span className={styles.levelName}>{name}</span>
+      <span className={styles.levelDescription}>{description}</span>
+    </>
+  ),
+}));
+
 interface Props {
   onStart: (level: Level, clef: Clef) => void;
 }
 
 const MenuScreen = ({ onStart }: Props) => {
   const [level, setLevel] = useState<Level>(LEVEL_OPTIONS.ADVANCED);
-  const [clef, setClef] = useState<Clef>(CLEF_OPTIONS.TREBLE);
+  const [clef, setClef] = useState<Clef>(CLEF_TYPE.TREBLE);
 
   return (
-    <Flex vertical align="center" justify="center" className={styles.screen}>
-      <Card className={styles.card}>
-        <Space direction="vertical" size="large" className={styles.content}>
-          <div>
-            <Title level={2} className={styles.title}>
-              KeySight
-            </Title>
-            <Text type="secondary">Sight-reading practice</Text>
-          </div>
+    <Flex
+      vertical
+      align="center"
+      justify="center"
+      className={sharedStyles.centeredScreen}
+    >
+      <main className={sharedStyles.card}>
+        <header className={styles.header}>
+          <h1 className={styles.wordmark}>
+            Key<span className={styles.wordmarkSight}>Sight</span>
+          </h1>
+          <p className={styles.subtitle}>Sight-reading practice</p>
+        </header>
 
-          <div className={styles.section}>
-            <Text strong>Clef</Text>
-            <Radio.Group
-              value={clef}
-              onChange={(event) => setClef(event.target.value as Clef)}
-              className={styles.clefGroup}
-            >
-              <Radio.Button
-                value={CLEF_OPTIONS.TREBLE}
-                className={styles.clefOption}
-              >
-                <span
-                  role="img"
-                  aria-label="Treble clef"
-                  className={cx(styles.clef, styles.trebleClefTransform)}
-                >
-                  {VexFlow.Glyphs.gClef}
-                </span>
-              </Radio.Button>
-              <Radio.Button
-                value={CLEF_OPTIONS.BASS}
-                className={styles.clefOption}
-              >
-                <span
-                  role="img"
-                  aria-label="Bass clef"
-                  className={cx(styles.clef, styles.bassClefTransform)}
-                >
-                  {VexFlow.Glyphs.fClef}
-                </span>
-              </Radio.Button>
-            </Radio.Group>
-          </div>
+        <ChoiceGroup
+          name="clef"
+          legend="Clef"
+          value={clef}
+          options={CLEF_CHOICES}
+          onChange={setClef}
+          className={styles.clefOptions}
+          optionClassName={styles.clefOption}
+        />
 
-          <div className={styles.section}>
-            <Text strong>Level</Text>
-            <Radio.Group
-              value={level}
-              onChange={(event) => setLevel(event.target.value as Level)}
-              className={styles.levelGroup}
-            >
-              <Radio.Button
-                value={LEVEL_OPTIONS.BEGINNER}
-                className={styles.levelOption}
-              >
-                Beginner — Staff notes only
-              </Radio.Button>
-              <Radio.Button
-                value={LEVEL_OPTIONS.INTERMEDIATE}
-                className={styles.levelOption}
-              >
-                Intermediate — + Ledger lines
-              </Radio.Button>
-              <Radio.Button
-                value={LEVEL_OPTIONS.ADVANCED}
-                className={styles.levelOption}
-              >
-                Advanced — + Accidentals
-              </Radio.Button>
-            </Radio.Group>
-          </div>
+        <ChoiceGroup
+          name="level"
+          legend="Level"
+          value={level}
+          options={LEVEL_CHOICES}
+          onChange={setLevel}
+          className={styles.levelOptions}
+          optionClassName={styles.levelOption}
+        />
 
-          <Button
-            type="primary"
-            size="large"
-            block
-            className={styles.startButton}
-            onClick={() => onStart(level, clef)}
-          >
-            Start (20 questions)
-          </Button>
-        </Space>
-      </Card>
+        <Button
+          type="primary"
+          size="large"
+          block
+          className={sharedStyles.primaryButton}
+          onClick={() => onStart(level, clef)}
+        >
+          Start ({TOTAL_QUESTIONS} questions)
+        </Button>
+      </main>
     </Flex>
   );
 };

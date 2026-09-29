@@ -12,12 +12,19 @@ export default defineConfig({
     VitePWA({
       registerType: "autoUpdate",
       includeAssets: ["favicon.ico", "apple-touch-icon.png"],
+      workbox: {
+        // Defaults, plus the Latin subset of Inter so the font works offline
+        globPatterns: [
+          "**/*.{js,css,html}",
+          "**/inter-latin-wght-normal-*.woff2",
+        ],
+      },
       manifest: {
         name: "KeySight",
         short_name: "KeySight",
         description: "Sight-reading practice game for F and G clef",
-        theme_color: "#1677ff",
-        background_color: "#ffffff",
+        theme_color: "#EEF4F7",
+        background_color: "#EEF4F7",
         display: "standalone",
         orientation: "portrait",
         icons: [
