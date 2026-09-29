@@ -6,11 +6,12 @@ import ResultsScreen from "./components/ResultsScreen";
 import type { Answer, Clef, GamePhase, Level } from "./types";
 import { generateQuestions } from "./gameLogic";
 import { startAudio } from "./audio";
+import { CLEF_TYPE } from "./constants";
 
 const App = () => {
   const [phase, setPhase] = useState<GamePhase>("menu");
   const [level, setLevel] = useState<Level>("beginner");
-  const [clef, setClef] = useState<Clef>("treble");
+  const [clef, setClef] = useState<Clef>(CLEF_TYPE.TREBLE);
   const [answers, setAnswers] = useState<Answer[]>([]);
 
   const startGame = (selectedLevel: Level, selectedClef: Clef) => {

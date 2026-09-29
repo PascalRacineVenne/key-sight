@@ -37,6 +37,24 @@ export const styles = {
   clefOption: css`
     flex: 1;
     text-align: center;
+    height: 72px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  `,
+
+  clef: css`
+    font-family: Bravura;
+    font-size: 32px;
+    line-height: 1;
+    display: block;
+  `,
+  trebleClefTransform: css`
+    transform: translateY(0.19em);
+  `,
+
+  bassClefTransform: css`
+    transform: translateY(-0.19em);
   `,
 
   levelGroup: css`

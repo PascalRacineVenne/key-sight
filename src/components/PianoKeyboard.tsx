@@ -33,6 +33,8 @@ const CHROMATIC_ORDER: Record<string, number> = {
   B: 11,
 };
 
+const BLACK_KEY_SIZE_RATIO = 0.6;
+
 const pitchIndex = (note: NoteDefinition) =>
   note.octave * 12 + (CHROMATIC_ORDER[note.name] ?? 0);
 
@@ -54,8 +56,8 @@ const PianoKeyboard = ({
 
   const keyWidth = 52;
   const whiteHeight = keyWidth * 2.8;
-  const blackHeight = whiteHeight * 0.6;
-  const blackWidth = keyWidth * 0.6;
+  const blackHeight = whiteHeight * BLACK_KEY_SIZE_RATIO;
+  const blackWidth = keyWidth * BLACK_KEY_SIZE_RATIO;
 
   const handlePress = (note: NoteDefinition) => {
     void playNote(note.keyLabel);
@@ -71,7 +73,7 @@ const PianoKeyboard = ({
   };
 
   // Map black key to position between white keys
-  const blackKeyLeft = (note: NoteDefinition): number => {
+  const blackKeyLeft = (note: NoteDefinition): number | null => {
     const name = note.name.replace(/\d/, "");
     const octave = note.octave;
     // find the white key to the left
@@ -88,11 +90,11 @@ const PianoKeyboard = ({
       Bb: "A",
     };
     const leftName = leftWhiteMap[name];
-    if (!leftName) return 0;
+    if (!leftName) return null;
     const idx = whiteKeys.findIndex(
       (whiteKey) => whiteKey.name === leftName && whiteKey.octave === octave,
     );
-    if (idx === -1) return -999;
+    if (idx === -1) return null;
     return idx * keyWidth + keyWidth - blackWidth / 2;
   };
 
@@ -122,7 +124,7 @@ const PianoKeyboard = ({
       {/* Black keys */}
       {blackKeys.map((note) => {
         const left = blackKeyLeft(note);
-        if (left < 0) return null;
+        if (left === null) return null;
         const stateClass = getKeyStateClass(note);
         return (
           <button

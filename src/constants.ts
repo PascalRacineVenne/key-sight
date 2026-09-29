@@ -1,9 +1,14 @@
-import type { Feedback } from "./types";
+import type { Clef, Feedback } from "./types";
 
 export const FEEDBACK_COLORS: Record<Exclude<Feedback, "none">, string> = {
   correct: "#52c41a",
   incorrect: "#ff4d4f",
 };
+
+export const CLEF_TYPE = {
+  TREBLE: "treble",
+  BASS: "bass",
+} as const satisfies Record<string, Clef>;
 
 // How long the answer feedback stays up before the next question.
 // The player can adjust it with the slider on the game screen.

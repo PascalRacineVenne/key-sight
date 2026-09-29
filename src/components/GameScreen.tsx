@@ -13,7 +13,7 @@ const { Text } = Typography;
 
 const formatSeconds = (ms: number) => `${(ms / 1000).toFixed(2)} s`;
 
-interface Props {
+interface GameScreenProps {
   level: Level;
   clef: Clef;
   questions: Question[];
@@ -26,7 +26,7 @@ export const FEEDBACK_OPTIONS: Record<string, Feedback> = {
   INCORRECT: "incorrect",
 };
 
-const GameScreen = ({ level, clef, questions, onFinish }: Props) => {
+const GameScreen = ({ level, clef, questions, onFinish }: GameScreenProps) => {
   const [index, setIndex] = useState(0);
   const [answers, setAnswers] = useState<Answer[]>([]);
   const [selectedKey, setSelectedKey] = useState<string | null>(null);
@@ -36,24 +36,24 @@ const GameScreen = ({ level, clef, questions, onFinish }: Props) => {
   );
   const [playNoteFirst, setPlayNoteFirst] = useState(true);
 
-  const current = questions[index];
+  const currentQuestion = questions[index];
   const keyboardNotes = getKeyboardNotes(level, clef);
 
   useEffect(() => {
     if (feedback !== FEEDBACK_OPTIONS.NONE || !playNoteFirst) return;
-    void playNote(current.note.keyLabel);
-  }, [current, feedback, playNoteFirst]);
+    void playNote(currentQuestion.note.keyLabel);
+  }, [currentQuestion, feedback, playNoteFirst]);
 
   const handleSelect = useCallback(
     (keyLabel: string) => {
       if (feedback !== FEEDBACK_OPTIONS.NONE) return;
-      const correct = keyLabel === current.note.keyLabel;
+      const correct = keyLabel === currentQuestion.note.keyLabel;
       setSelectedKey(keyLabel);
       setFeedback(
         correct ? FEEDBACK_OPTIONS.CORRECT : FEEDBACK_OPTIONS.INCORRECT,
       );
     },
-    [feedback, current],
+    [feedback, currentQuestion],
   );
 
   // Once answered, move on automatically (or finish after the last question)
@@ -67,9 +67,9 @@ const GameScreen = ({ level, clef, questions, onFinish }: Props) => {
 
     const timer = setTimeout(() => {
       const newAnswer: Answer = {
-        question: current,
+        question: currentQuestion,
         selected: selectedKey,
-        correct: selectedKey === current.note.keyLabel,
+        correct: selectedKey === currentQuestion.note.keyLabel,
       };
       const newAnswers = [...answers, newAnswer];
 
@@ -84,7 +84,15 @@ const GameScreen = ({ level, clef, questions, onFinish }: Props) => {
     }, delayMs);
 
     return () => clearTimeout(timer);
-  }, [feedback, current, selectedKey, answers, index, onFinish, nextDelayMs]);
+  }, [
+    feedback,
+    currentQuestion,
+    selectedKey,
+    answers,
+    index,
+    onFinish,
+    nextDelayMs,
+  ]);
 
   const progressPercent = Math.round(((index + 1) / TOTAL_QUESTIONS) * 100);
 
@@ -148,7 +156,7 @@ const GameScreen = ({ level, clef, questions, onFinish }: Props) => {
           </Flex>
         </Flex>
 
-        <NoteStaff question={current} feedback={feedback} />
+        <NoteStaff question={currentQuestion} feedback={feedback} />
 
         {/* Always rendered with a fixed height so showing the message
             doesn't shift the layout */}
@@ -162,7 +170,7 @@ const GameScreen = ({ level, clef, questions, onFinish }: Props) => {
         >
           {feedback === FEEDBACK_OPTIONS.CORRECT && "Correct!"}
           {feedback === FEEDBACK_OPTIONS.INCORRECT &&
-            `Incorrect — it was ${current.note.name}`}
+            `Incorrect — it was ${currentQuestion.note.name}`}
         </div>
       </Flex>
 
@@ -174,7 +182,9 @@ const GameScreen = ({ level, clef, questions, onFinish }: Props) => {
           disabled={feedback !== FEEDBACK_OPTIONS.NONE}
           selectedKey={selectedKey}
           correctKey={
-            feedback !== FEEDBACK_OPTIONS.NONE ? current.note.keyLabel : null
+            feedback !== FEEDBACK_OPTIONS.NONE
+              ? currentQuestion.note.keyLabel
+              : null
           }
         />
       </Flex>
