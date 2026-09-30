@@ -6,6 +6,11 @@ A sight-reading practice app for musicians learning to identify notes on the mus
 
 KeySight displays a random note on a staff and asks you to identify it by tapping the correct key on an on-screen piano keyboard. After 20 questions, you get a score with a breakdown of every answer.
 
+
+<img width="640" height="416" alt="key_sight" src="https://github.com/user-attachments/assets/e5cd2576-cbd0-4db5-b227-816ba970503e" />
+
+
+
 ### Clefs
 
 - **Treble (G clef)** — covers the range typically played by the right hand
