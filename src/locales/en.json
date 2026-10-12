@@ -23,6 +23,8 @@
   "level.advanced": "Advanced",
   "level.advancedDescription": "+ Accidentals",
 
+  "language.switcherLabel": "Language",
+
   "exercise.summary": "{level} · {clef}",
 
   "menu.subtitle": "Sight-reading practice",

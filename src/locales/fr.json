@@ -23,6 +23,8 @@
   "level.advanced": "Avancé",
   "level.advancedDescription": "+ Altérations (#, b)",
 
+  "language.switcherLabel": "Langue",
+
   "exercise.summary": "{level} · {clef}",
 
   "menu.subtitle": "Entraînement à la lecture à vue",

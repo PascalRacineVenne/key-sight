@@ -3,6 +3,7 @@ import { ConfigProvider } from "antd";
 import MenuScreen from "./components/MenuScreen";
 import GameScreen from "./components/GameScreen";
 import ResultsScreen from "./components/ResultsScreen";
+import LanguageSwitcher from "./components/LanguageSwitcher";
 import type { Answer, Clef, GamePhase, Level } from "./types";
 import { generateQuestions } from "./gameLogic";
 import { startAudio } from "./audio";
@@ -30,6 +31,7 @@ const App = () => {
 
   return (
     <ConfigProvider theme={antdTheme}>
+      <LanguageSwitcher />
       {phase === "menu" && <MenuScreen onStart={startGame} />}
       {phase === "playing" && (
         <GameScreen
