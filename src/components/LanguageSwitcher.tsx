@@ -3,14 +3,17 @@ import { useIntl } from "react-intl";
 import { SUPPORTED_LOCALES } from "../i18n";
 import type { Locale } from "../i18n";
 import { useLocale } from "../LocaleProvider";
-import { styles } from "./LanguageSwitcher.styles";
 
 const LOCALE_OPTIONS = SUPPORTED_LOCALES.map((locale) => ({
   value: locale,
   label: locale.toUpperCase(),
 }));
 
-const LanguageSwitcher = () => {
+interface Props {
+  className?: string;
+}
+
+const LanguageSwitcher = ({ className }: Props) => {
   const intl = useIntl();
   const { locale, setLocale } = useLocale();
 
@@ -21,7 +24,7 @@ const LanguageSwitcher = () => {
       value={locale}
       onChange={setLocale}
       aria-label={intl.formatMessage({ id: "language.switcherLabel" })}
-      className={styles.switcher}
+      className={className}
     />
   );
 };

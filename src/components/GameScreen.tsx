@@ -9,6 +9,7 @@ import { getKeyboardNotes, TOTAL_QUESTIONS } from "../gameLogic";
 import { NEXT_QUESTION_DELAY_MS } from "../constants";
 import { playNote } from "../audio";
 import { useNoteName } from "../useNoteName";
+import LanguageSwitcher from "./LanguageSwitcher";
 import { styles } from "./GameScreen.styles";
 
 interface GameScreenProps {
@@ -125,6 +126,7 @@ const GameScreen = ({ level, clef, questions, onFinish }: GameScreenProps) => {
             },
           )}
         </span>
+        <LanguageSwitcher className={styles.languageSwitcher} />
       </header>
 
       {/* Settings for the current exercise */}

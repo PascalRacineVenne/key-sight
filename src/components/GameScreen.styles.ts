@@ -49,6 +49,10 @@ export const styles = {
     }
   `,
 
+  languageSwitcher: css`
+    flex-shrink: 0;
+  `,
+
   // Small context capsule: "Advanced · Treble Clef"
   badge: css`
     padding: 4px 10px;
