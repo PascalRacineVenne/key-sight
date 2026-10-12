@@ -2,6 +2,7 @@ import { useState } from "react";
 import { Button, Flex } from "antd";
 import { VexFlow } from "vexflow";
 import { cx } from "@linaria/core";
+import { FormattedMessage, useIntl } from "react-intl";
 import type { Clef, Level } from "../types";
 import { CLEF_TYPE } from "../constants";
 import { TOTAL_QUESTIONS } from "../gameLogic";
@@ -18,7 +19,7 @@ const LEVEL_OPTIONS: Record<string, Level> = {
 const CLEF_CHOICES = [
   {
     value: CLEF_TYPE.TREBLE,
-    ariaLabel: "Treble clef",
+    ariaLabelId: "clef.treble",
     content: (
       <span aria-hidden className={cx(styles.clef, styles.trebleClef)}>
         {VexFlow.Glyphs.gClef}
@@ -27,7 +28,7 @@ const CLEF_CHOICES = [
   },
   {
     value: CLEF_TYPE.BASS,
-    ariaLabel: "Bass clef",
+    ariaLabelId: "clef.bass",
     content: (
       <span aria-hidden className={cx(styles.clef, styles.bassClef)}>
         {VexFlow.Glyphs.fClef}
@@ -39,25 +40,29 @@ const CLEF_CHOICES = [
 const LEVEL_CHOICES = [
   {
     value: LEVEL_OPTIONS.BEGINNER,
-    name: "Beginner",
-    description: "Staff notes only",
+    nameId: "level.beginner",
+    descriptionId: "level.beginnerDescription",
   },
   {
     value: LEVEL_OPTIONS.INTERMEDIATE,
-    name: "Intermediate",
-    description: "+ Ledger lines",
+    nameId: "level.intermediate",
+    descriptionId: "level.intermediateDescription",
   },
   {
     value: LEVEL_OPTIONS.ADVANCED,
-    name: "Advanced",
-    description: "+ Accidentals",
+    nameId: "level.advanced",
+    descriptionId: "level.advancedDescription",
   },
-].map(({ value, name, description }) => ({
+].map(({ value, nameId, descriptionId }) => ({
   value,
   content: (
     <>
-      <span className={styles.levelName}>{name}</span>
-      <span className={styles.levelDescription}>{description}</span>
+      <span className={styles.levelName}>
+        <FormattedMessage id={nameId} />
+      </span>
+      <span className={styles.levelDescription}>
+        <FormattedMessage id={descriptionId} />
+      </span>
     </>
   ),
 }));
@@ -67,8 +72,14 @@ interface Props {
 }
 
 const MenuScreen = ({ onStart }: Props) => {
+  const intl = useIntl();
   const [level, setLevel] = useState<Level>(LEVEL_OPTIONS.ADVANCED);
   const [clef, setClef] = useState<Clef>(CLEF_TYPE.TREBLE);
+
+  const clefOptions = CLEF_CHOICES.map(({ ariaLabelId, ...option }) => ({
+    ...option,
+    ariaLabel: intl.formatMessage({ id: ariaLabelId }),
+  }));
 
   return (
     <Flex
@@ -82,14 +93,16 @@ const MenuScreen = ({ onStart }: Props) => {
           <h1 className={styles.wordmark}>
             Key<span className={styles.wordmarkSight}>Sight</span>
           </h1>
-          <p className={styles.subtitle}>Sight-reading practice</p>
+          <p className={styles.subtitle}>
+            <FormattedMessage id="menu.subtitle" />
+          </p>
         </header>
 
         <ChoiceGroup
           name="clef"
-          legend="Clef"
+          legend={intl.formatMessage({ id: "menu.clefLegend" })}
           value={clef}
-          options={CLEF_CHOICES}
+          options={clefOptions}
           onChange={setClef}
           className={styles.clefOptions}
           optionClassName={styles.clefOption}
@@ -97,7 +110,7 @@ const MenuScreen = ({ onStart }: Props) => {
 
         <ChoiceGroup
           name="level"
-          legend="Level"
+          legend={intl.formatMessage({ id: "menu.levelLegend" })}
           value={level}
           options={LEVEL_CHOICES}
           onChange={setLevel}
@@ -112,7 +125,10 @@ const MenuScreen = ({ onStart }: Props) => {
           className={sharedStyles.primaryButton}
           onClick={() => onStart(level, clef)}
         >
-          Start ({TOTAL_QUESTIONS} questions)
+          <FormattedMessage
+            id="menu.startButton"
+            values={{ count: TOTAL_QUESTIONS }}
+          />
         </Button>
       </main>
     </Flex>
