@@ -1,0 +1,51 @@
+{
+  "clef.treble": "Clé de sol",
+  "clef.bass": "Clé de fa",
+
+  "note.C": "Do",
+  "note.C#": "Do#",
+  "note.D": "Ré",
+  "note.Eb": "Mib",
+  "note.E": "Mi",
+  "note.F": "Fa",
+  "note.F#": "Fa#",
+  "note.G": "Sol",
+  "note.G#": "Sol#",
+  "note.Ab": "Lab",
+  "note.A": "La",
+  "note.Bb": "Sib",
+  "note.B": "Si",
+
+  "level.beginner": "Débutant",
+  "level.beginnerDescription": "Notes sur la portée uniquement",
+  "level.intermediate": "Intermédiaire",
+  "level.intermediateDescription": "+ Lignes supplémentaires",
+  "level.advanced": "Avancé",
+  "level.advancedDescription": "+ Altérations (#, b)",
+
+  "exercise.summary": "{level} · {clef}",
+
+  "menu.subtitle": "Entraînement à la lecture à vue",
+  "menu.clefLegend": "Clé",
+  "menu.levelLegend": "Niveau",
+  "menu.startButton": "Commencer ({count, plural, one {# question} other {# questions}})",
+
+  "game.progressLabel": "Question {current} sur {total}",
+  "game.settingsLabel": "Réglages de l'exercice",
+  "game.nextNoteLabel": "Note suivante",
+  "game.nextNoteAriaLabel": "Délai avant la note suivante",
+  "game.seconds": "{seconds, number, ::.00} s",
+  "game.playFirstLabel": "Jouer la note d'abord",
+  "game.playFirstAriaLabel": "Jouer chaque note avant de répondre",
+  "game.correct": "Correct !",
+  "game.incorrect": "Incorrect — c'était {note}",
+
+  "results.gradePerfect": "Parfait !",
+  "results.gradeExcellent": "Excellent",
+  "results.gradeGood": "Bien",
+  "results.gradeKeepPracticing": "Continuez à vous entraîner",
+  "results.gradeKeepGoing": "Courage !",
+  "results.notesToReview": "Notes à revoir",
+  "results.missedNote": "{note} x{count}",
+  "results.playAgainButton": "Rejouer"
+}
