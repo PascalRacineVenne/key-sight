@@ -20,7 +20,6 @@ export const useLocale = () => {
 export const LocaleProvider = ({ children }: { children: ReactNode }) => {
   const [locale, setLocale] = useState<Locale>(getInitialLocale);
 
-  // Only an explicit choice is saved, so until then we keep following the browser
   const changeLocale = (nextLocale: Locale) => {
     setLocale(nextLocale);
     saveLocale(nextLocale);

@@ -13,8 +13,6 @@ const isSupportedLocale = (value: string): value is Locale =>
 
 const STORAGE_KEY = "key-sight.locale";
 
-// Storage can throw (private windows, blocked site data), so every access is
-// wrapped and the app works without it
 const readStoredLocale = (): string | null => {
   try {
     return localStorage.getItem(STORAGE_KEY);
@@ -31,7 +29,6 @@ export const saveLocale = (locale: Locale) => {
   }
 };
 
-// Saved choice first, then the browser language ("fr-CA" -> "fr"), then the default
 export const getInitialLocale = (): Locale => {
   const stored = readStoredLocale();
   if (stored && isSupportedLocale(stored)) return stored;
