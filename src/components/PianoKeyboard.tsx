@@ -3,6 +3,7 @@ import { Flex } from "antd";
 import { cx } from "@linaria/core";
 import type { NoteDefinition } from "../types";
 import { playNote } from "../audio";
+import { useNoteName } from "../useNoteName";
 import { styles } from "./PianoKeyboard.styles";
 
 interface Props {
@@ -48,6 +49,11 @@ const PianoKeyboard = ({
   selectedKey,
   correctKey,
 }: Props) => {
+  const getNoteName = useNoteName();
+  // Displayed name only (Do#4); keyLabel stays the identifier for audio and state
+  const getDisplayLabel = (note: NoteDefinition) =>
+    `${getNoteName(note.name)}${note.octave}`;
+
   const sorted = [...notes].sort(
     (leftNote, rightNote) => pitchIndex(leftNote) - pitchIndex(rightNote),
   );
@@ -110,7 +116,7 @@ const PianoKeyboard = ({
       {whiteKeys.map((note) => (
         <button
           key={note.keyLabel}
-          aria-label={note.keyLabel}
+          aria-label={getDisplayLabel(note)}
           disabled={disabled}
           onClick={() => handlePress(note)}
           className={cx(
@@ -119,7 +125,7 @@ const PianoKeyboard = ({
             getKeyState(note) === "incorrect" && styles.incorrect,
           )}
         >
-          {note.keyLabel}
+          {getDisplayLabel(note)}
           {note.keyLabel === "C4" && <span className={styles.middleC} />}
         </button>
       ))}
@@ -132,7 +138,7 @@ const PianoKeyboard = ({
         return (
           <button
             key={note.keyLabel}
-            aria-label={note.keyLabel}
+            aria-label={getDisplayLabel(note)}
             disabled={disabled}
             onClick={() => handlePress(note)}
             className={cx(
@@ -142,7 +148,7 @@ const PianoKeyboard = ({
             )}
             style={{ left }}
           >
-            {note.keyLabel}
+            {getDisplayLabel(note)}
           </button>
         );
       })}

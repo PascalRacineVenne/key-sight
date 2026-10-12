@@ -1,0 +1,53 @@
+{
+  "clef.treble": "Treble clef",
+  "clef.bass": "Bass clef",
+
+  "note.C": "C",
+  "note.C#": "C#",
+  "note.D": "D",
+  "note.Eb": "Eb",
+  "note.E": "E",
+  "note.F": "F",
+  "note.F#": "F#",
+  "note.G": "G",
+  "note.G#": "G#",
+  "note.Ab": "Ab",
+  "note.A": "A",
+  "note.Bb": "Bb",
+  "note.B": "B",
+
+  "level.beginner": "Beginner",
+  "level.beginnerDescription": "Staff notes only",
+  "level.intermediate": "Intermediate",
+  "level.intermediateDescription": "+ Ledger lines",
+  "level.advanced": "Advanced",
+  "level.advancedDescription": "+ Accidentals",
+
+  "language.switcherLabel": "Language",
+
+  "exercise.summary": "{level} · {clef}",
+
+  "menu.subtitle": "Sight-reading practice",
+  "menu.clefLegend": "Clef",
+  "menu.levelLegend": "Level",
+  "menu.startButton": "Start ({count, plural, one {# question} other {# questions}})",
+
+  "game.progressLabel": "Question {current} of {total}",
+  "game.settingsLabel": "Practice settings",
+  "game.nextNoteLabel": "Next note",
+  "game.nextNoteAriaLabel": "Delay before next note",
+  "game.seconds": "{seconds, number, ::.00} s",
+  "game.playFirstLabel": "Play note first",
+  "game.playFirstAriaLabel": "Play each note before answering",
+  "game.correct": "Correct!",
+  "game.incorrect": "Incorrect — it was {note}",
+
+  "results.gradePerfect": "Perfect!",
+  "results.gradeExcellent": "Excellent",
+  "results.gradeGood": "Good",
+  "results.gradeKeepPracticing": "Keep practicing",
+  "results.gradeKeepGoing": "Keep going!",
+  "results.notesToReview": "Notes to review",
+  "results.missedNote": "{note} x{count}",
+  "results.playAgainButton": "Play Again"
+}

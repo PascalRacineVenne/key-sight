@@ -1,15 +1,16 @@
 import { useState, useCallback, useEffect } from "react";
 import { Flex, Progress, Slider, Switch } from "antd";
 import { cx } from "@linaria/core";
+import { FormattedMessage, useIntl } from "react-intl";
 import NoteStaff from "./NoteStaff";
 import PianoKeyboard from "./PianoKeyboard";
 import type { Answer, Clef, Feedback, Level, Question } from "../types";
 import { getKeyboardNotes, TOTAL_QUESTIONS } from "../gameLogic";
 import { NEXT_QUESTION_DELAY_MS } from "../constants";
 import { playNote } from "../audio";
+import { useNoteName } from "../useNoteName";
+import LanguageSwitcher from "./LanguageSwitcher";
 import { styles } from "./GameScreen.styles";
-
-const formatSeconds = (ms: number) => `${(ms / 1000).toFixed(2)} s`;
 
 interface GameScreenProps {
   level: Level;
@@ -25,6 +26,8 @@ export const FEEDBACK_OPTIONS: Record<string, Feedback> = {
 };
 
 const GameScreen = ({ level, clef, questions, onFinish }: GameScreenProps) => {
+  const intl = useIntl();
+  const getNoteName = useNoteName();
   const [index, setIndex] = useState(0);
   const [answers, setAnswers] = useState<Answer[]>([]);
   const [selectedKey, setSelectedKey] = useState<string | null>(null);
@@ -92,6 +95,9 @@ const GameScreen = ({ level, clef, questions, onFinish }: GameScreenProps) => {
     nextDelayMs,
   ]);
 
+  const formatSeconds = (ms: number) =>
+    intl.formatMessage({ id: "game.seconds" }, { seconds: ms / 1000 });
+
   const progressPercent = Math.round(((index + 1) / TOTAL_QUESTIONS) * 100);
 
   return (
@@ -106,17 +112,32 @@ const GameScreen = ({ level, clef, questions, onFinish }: GameScreenProps) => {
           showInfo={false}
           size={{ height: 4 }}
           className={styles.progress}
-          aria-label={`Question ${index + 1} of ${TOTAL_QUESTIONS}`}
+          aria-label={intl.formatMessage(
+            { id: "game.progressLabel" },
+            { current: index + 1, total: TOTAL_QUESTIONS },
+          )}
         />
         <span className={styles.badge}>
-          {level} · {clef} clef
+          {intl.formatMessage(
+            { id: "exercise.summary" },
+            {
+              level: intl.formatMessage({ id: `level.${level}` }),
+              clef: intl.formatMessage({ id: `clef.${clef}` }),
+            },
+          )}
         </span>
+        <LanguageSwitcher className={styles.languageSwitcher} />
       </header>
 
       {/* Settings for the current exercise */}
-      <section aria-label="Practice settings" className={styles.controls}>
+      <section
+        aria-label={intl.formatMessage({ id: "game.settingsLabel" })}
+        className={styles.controls}
+      >
         <Flex align="center" gap={10} className={styles.delayControl}>
-          <span className={styles.controlLabel}>Next note</span>
+          <span className={styles.controlLabel}>
+            <FormattedMessage id="game.nextNoteLabel" />
+          </span>
           <Slider
             min={NEXT_QUESTION_DELAY_MS.min}
             max={NEXT_QUESTION_DELAY_MS.max}
@@ -124,7 +145,7 @@ const GameScreen = ({ level, clef, questions, onFinish }: GameScreenProps) => {
             value={nextDelayMs}
             onChange={setNextDelayMs}
             tooltip={{ formatter: (ms) => formatSeconds(ms ?? 0) }}
-            aria-label="Delay before next note"
+            aria-label={intl.formatMessage({ id: "game.nextNoteAriaLabel" })}
             className={styles.delaySlider}
           />
           <span className={cx(styles.controlLabel, styles.delayValue)}>
@@ -133,12 +154,14 @@ const GameScreen = ({ level, clef, questions, onFinish }: GameScreenProps) => {
         </Flex>
         <span aria-hidden className={styles.controlDivider} />
         <Flex align="center" gap={10}>
-          <span className={styles.controlLabel}>Play note first</span>
+          <span className={styles.controlLabel}>
+            <FormattedMessage id="game.playFirstLabel" />
+          </span>
           <Switch
             size="small"
             checked={playNoteFirst}
             onChange={setPlayNoteFirst}
-            aria-label="Play each note before answering"
+            aria-label={intl.formatMessage({ id: "game.playFirstAriaLabel" })}
           />
         </Flex>
       </section>
@@ -157,9 +180,15 @@ const GameScreen = ({ level, clef, questions, onFinish }: GameScreenProps) => {
             feedback === FEEDBACK_OPTIONS.INCORRECT && styles.incorrect,
           )}
         >
-          {feedback === FEEDBACK_OPTIONS.CORRECT && "Correct!"}
-          {feedback === FEEDBACK_OPTIONS.INCORRECT &&
-            `Incorrect — it was ${currentQuestion.note.name}`}
+          {feedback === FEEDBACK_OPTIONS.CORRECT && (
+            <FormattedMessage id="game.correct" />
+          )}
+          {feedback === FEEDBACK_OPTIONS.INCORRECT && (
+            <FormattedMessage
+              id="game.incorrect"
+              values={{ note: getNoteName(currentQuestion.note.name) }}
+            />
+          )}
         </div>
       </div>
 

@@ -5,8 +5,9 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "tsc -b && vite build",
+    "build": "npm run i18n:check && tsc -b && vite build",
     "lint": "eslint .",
+    "i18n:check": "formatjs verify --source-locale en --missing-keys --extra-keys --structural-equality \"src/locales/*.json\"",
     "preview": "vite preview"
   },
   "dependencies": {
@@ -15,10 +16,12 @@
     "antd": "^5.24.0",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
+    "react-intl": "^12.1.4",
     "tone": "^15.0.4",
     "vexflow": "^5.0.0"
   },
   "devDependencies": {
+    "@formatjs/cli": "^6.16.34",
     "@types/react": "^19.0.0",
     "@types/react-dom": "^19.0.0",
     "@typescript-eslint/eslint-plugin": "^8.57.2",
